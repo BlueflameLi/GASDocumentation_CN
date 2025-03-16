@@ -1,3 +1,18 @@
+最近在学 GAS，但可惜几乎没官方文档，[tranek/GASDocumentation](https://github.com/BillEliot/GASDocumentation) 是个非常好的文档，但可惜是全英文的
+
+中文翻译目前看到两个 
+
+- [BillEliot/GASDocumentation_Chinese](https://github.com/BillEliot/GASDocumentation_Chinese) 的翻译很棒，不过已经很久没更新了
+- [DriedMachine/GASDocumentation5.3_CN](https://github.com/DriedMachine/GASDocumentation5.3_CN) 虽然目前没有同步最新的文档，不过也是最新的 5.3 版本
+
+出于学习 GAS 的目的，加上两位大佬的翻译都有些个小瑕疵，以及部分内容确实不太好理解（是我语文太差了），所以我打算边学 GAS，边翻译文档
+
+翻译主要在 Deepseek 翻译的基础上，结合两位大佬的翻译进行修改
+
+一些专有名词，如果有官方中文（虚幻引擎官方中文文档和引擎内中文），我就以官方的翻译为准，比如 "Gameplay 效果(Gameplay Effects)" 、"堆叠 (Stacking)"、"技能系统组件 (Ability System Component)"。但个别比较抽象的翻译就还是按我自己的理解来了，比如"玩法技能 (Gameplay Abilities)"，我还是按照 "GamePlay 技能 (Gameplay Abilities)" 来翻译了
+
+我的翻译原则是除了变量名和函数名相关，其余能翻译的都翻译，不过考虑到引擎内各种 GAS 相关的配置项都还是英文，这些我会额外保留原名的
+
 # GAS文档
 
 我对 Unreal Engine 5 的 GameplayAbilitySystem 插件 (GAS)的理解，附带一个简单的多人示例项目。本文档非官方文档，项目与本人均与 Epic Games 无关联。不保证信息的准确性。
