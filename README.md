@@ -13,6 +13,10 @@
 
 我的翻译原则是除了变量名和函数名相关，其余能翻译的都翻译，不过考虑到引擎内各种 GAS 相关的配置项都还是英文，这些我会额外保留原名的
 
+>一些注意点：
+>
+>- **Replicated** 直译是复制，虚幻引擎官方文档也是翻译为复制，但基本是特指网络同步中的复制，所以有的地方会翻译成同步、网络同步或者网络复制，我这就还是按照复制翻译，所以除非是明显表达 copy 意思，否则都是特指网络复制
+
 # GAS文档
 
 我对 Unreal Engine 5 的 GameplayAbilitySystem 插件 (GAS)的理解，附带一个简单的多人示例项目。本文档非官方文档，项目与本人均与 Epic Games 无关联。不保证信息的准确性。
@@ -225,63 +229,69 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 <a name="sp"></a>
 
 ## 2. 示例项目
-本文档附带一个多人第三人称射击游戏示例项目，面向熟悉虚幻引擎但初次接触 GAS 插件的用户。用户需掌握 C++、蓝图 (Blueprints)、虚幻示意图形 (UMG)、网络复制 (Replication) 等中级知识。该项目展示了如何搭建一个基础的多人第三人称射击项目：
+本文档附带一个多人第三人称射击游戏示例项目，主要面向**初次接触 GameplayAbilitySystem 插件但具备虚幻引擎基础**的开发者。要求使用者掌握 C++、蓝图 (Blueprints)、虚幻示意图形 (UMG)、网络复制 (Replication) 等中级知识。该项目演示了如何构建一个基础且适用于多人联机的第三人称射击游戏框架：
 
-The goal is to keep this project simple while showing the GAS basics and demonstrating some commonly requested abilities with well-commented code. Because of its beginner focus, the project does not show advanced topics like [predicting projectiles](#concepts-p-spawn).
+- 对于**玩家/AI 控制的英雄角色**， `AbilitySystemComponent` (`ASC`) 将放在 `PlayerState` 类上
+- 对于**AI操控的小兵角色**， `ASC` 将放在 `Character` 类
 
-Concepts demonstrated:
-* `ASC` on `PlayerState` vs `Character`
-* Replicated `Attributes`
-* Replicated animation montages
+>这么设计的原因参见 [技能系统组件 (Ability System Component)](#concepts-asc)
+
+该项目旨在保持结构简洁的同时，展示技能系统（GAS）的基础功能，并通过注释详尽的代码实现常用技能。因其面向新手，未涉及发射物预测 [(predicting projectiles)](#concepts-p-spawn)之类的高级内容。
+
+演示概念：
+* `PlayerState` 与 `Character`上的 `ASC` 对比
+* 复制 `Attributes`
+* 复制动画蒙太奇
 * `GameplayTags`
-* Applying and removing `GameplayEffects` inside of and externally from `GameplayAbilities`
-* Applying damage mitigated by armor to change health of a character
-* `GameplayEffectExecutionCalculations`
-* Stun effect
-* Death and respawn
-* Spawning actors (projectiles) from an ability on the server
-* Predictively changing the local player's speed with aim down sights and sprinting
-* Constantly draining stamina to sprint
-* Using mana to cast abilities
-* Passive abilities
-* Stacking `GameplayEffects`
-* Targeting actors
-* `GameplayAbilities` created in Blueprint
-* `GameplayAbilities` created in C++
-* Instanced per `Actor` `GameplayAbilities`
-* Non-Instanced `GameplayAbilities` (Jump)
-* Static `GameplayCues` (FireGun projectile impact particle effect)
-* Actor `GameplayCues` (Sprint and Stun particle effects)
+* 在 `GameplayAbilitys` 内部和外部应用和移除 `GameplayEffects`.
+* 应用受护甲减伤后的伤害值以改变角色生命值
+* `GameplayEffectExecutionCalculations` (Gameplay 效果执行计算)
+* 眩晕效果（Stun Effect）
+* 死亡与重生机制
+* 通过服务端技能生成 Actor (发射物)
+* 当瞄准与冲刺时，预测性调整本地玩家速度
+* 持续消耗耐力以维持冲刺状态
+* 消耗法力值施放技能
+* 被动技能 (Passive Abilities)
+* 堆叠 `GameplayEffects`
+* 目标选取（锁定 Actor）
+* 在蓝图中创建 `GameplayAbilities` 
+*  在 C++ 中创建 `GameplayAbilities`
+* 按  `Actor` 独立实例化 `GameplayAbilities`
+* 非实例化 `GameplayAbilities` (跳跃)
+* 静态 `GameplayCues` (如枪械命中粒子特效)
+* 基于 Actor 的 `GameplayCues` (冲刺与眩晕粒子特效)
 
-The hero class has the following abilities:
+英雄 (hero) 类包含以下技能：
 
-| Ability              | Input Bind         | Predicted | C++ / Blueprint | Description                                                  |
-| -------------------- | ------------------ | --------- | --------------- | ------------------------------------------------------------ |
-| Jump                 | Space Bar          | Yes       | C++             | Makes the hero jump.                                         |
-| Gun                  | Left Mouse Button  | No        | C++             | Fires a projectile from the hero's gun. The animation is predicted but the projectile is not. |
-| Aim Down Sights      | Right Mouse Button | Yes       | Blueprint       | While the button is held, the hero will walk slower and the camera will zoom in to allow more precise shots with the gun. |
-| Sprint               | Left Shift         | Yes       | Blueprint       | While the button is held, the hero will run faster draining stamina. |
-| Forward Dash         | Q                  | Yes       | Blueprint       | The hero dashes forward at the cost of stamina.              |
-| Passive Armor Stacks | Passive            | No        | Blueprint       | Every 4 seconds the hero gains a stack of armor up to a maximum of 4 stacks. Receiving damage removes one stack of armor. |
-| Meteor               | R                  | No        | Blueprint       | Player targets a location to drop a meteor on the enemies causing damage and stunning them. The targeting is predicted while spawning the meteor is not. |
+| 技能             | 输入绑定  | 是否可预测 | C++ / 蓝图 | 技能描述                                                     |
+| ---------------- | --------- | ---------- | ---------- | ------------------------------------------------------------ |
+| 跳跃             | 空格键    | 是         | C++        | 使英雄执行跳跃动作。                                         |
+| 射击             | 鼠标左键  | 否         | C++        | 从英雄的枪械射出发射物。动画效果支持预测，但发射物生成无法预测。 |
+| 瞄准（精准射击） | 鼠标右键  | 是         | 蓝图       | 按住鼠标右键时，英雄移速降低且镜头拉近，以提升枪械射击精度。 |
+| 疾跑             | 左 Shift  | 是         | 蓝图       | 按住按键时，英雄加速移动并持续消耗耐力。                     |
+| 向前冲刺         | Q         | 是         | 蓝图       | 英雄消耗耐力向前冲刺。                                       |
+| 被动护甲叠加     | 无 (被动) | 否         | 蓝图       | 每 4 秒获得 1 层护甲（上限 4 层），受到伤害时移除 1 层护甲。 |
+| 陨石术           | R         | 否         | 蓝图       | 玩家指定目标位置召唤陨石，对敌人造成伤害并附加眩晕。目标选取可预测，陨石生成无法预测。 |
 
-It does not matter if `GameplayAbilities` are created in C++ or Blueprint. A mixture of the two were used here for example of how to do them in each language.
+`GameplayAbilities` 通过 C++ 还是蓝图创建都没关系。本示例中混合使用两者，仅为演示不同语言环境下的实现方式。
 
-Minions do not come with any predefined `GameplayAbilities`. The Red Minions have more health regen while the Blue Minions have higher starting health.
+小兵单位无任何预先定义的 `GameplayAbilities`。 红色小兵拥有更高的生命恢复速度而蓝色小兵有更高的初始生命值
 
-For `GameplayAbility` naming, I used the suffix `_BP` to denote the `GameplayAbility's` logic was created in Blueprint. The lack of suffix means the logic was created in C++.
+对与 `GameplayAbility` 的命名，我使用 `_BP` 后缀来表示通过蓝图实现的`GameplayAbility` 逻辑。无后缀则表示逻辑通过 C++ 实现.
 
-**Blueprint Asset Naming Prefixes**
+**蓝图资源命名前缀规范**
 
-| Prefix | Asset Type      |
-| ------ | --------------- |
-| GA_    | GameplayAbility |
-| GC_    | GameplayCue     |
-| GE_    | GameplayEffect  |
+| 前缀 | 资产类型        |
+| ---- | --------------- |
+| GA_  | GameplayAbility |
+| GC_  | GameplayCue     |
+| GE_  | GameplayEffect  |
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 返回顶部](#table-of-contents)**
 
 <a name="setup"></a>
+
 ## 3. Setting Up a Project Using GAS
 Basic steps to set up a project using GAS:
 1. Enable GameplayAbilitySystem plugin in the Editor
