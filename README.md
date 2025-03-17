@@ -11,11 +11,12 @@
 
 一些专有名词，如果有官方中文（虚幻引擎官方中文文档和引擎内中文），我就以官方的翻译为准，比如 "Gameplay 效果(Gameplay Effects)" 、"堆叠 (Stacking)"、"技能系统组件 (Ability System Component)"。但个别比较抽象的翻译就还是按我自己的理解来了，比如"玩法技能 (Gameplay Abilities)"，我还是按照 "GamePlay 技能 (Gameplay Abilities)" 来翻译了
 
-我的翻译原则是除了变量名和函数名相关，其余能翻译的都翻译，不过考虑到引擎内各种 GAS 相关的配置项都还是英文，这些我会额外保留原名的
+我的翻译原则是除了变量名和函数名相关，其余能翻译的都翻译，不过考虑到引擎内各种 GAS 相关的配置项都还是英文，这些我会额外保留原名的，指向官方文档的链接也都会替换为默认中文的链接，并指定为 5.3 版本的
 
 >一些注意点：
 >
 >- **Replicated** 直译是复制，虚幻引擎官方文档也是翻译为复制，但基本是特指网络同步中的复制，所以有的地方会翻译成同步、网络同步或者网络复制，我这就还是按照复制翻译，所以除非是明显表达 copy 意思，否则都是特指网络复制
+>- 4.1 开头提到的 **自适应型网络更新频率 (Adaptive Network Update Frequency)** ，在 5.3 及以上的文档里已经没了，因此该链接修改为 5.2 版本的文档
 
 # GAS文档
 
@@ -195,7 +196,7 @@
 
 <a name="intro"></a>
 ## 1. GameplayAbilitySystem 插件简介
-[官方文档](https://docs.unrealengine.com/zh-cn/Gameplay/GameplayAbilitySystem/index.html)描述：
+[官方文档](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/gameplay-ability-system-for-unreal-engine?application_version=5.3)描述：
 
 >**Gameplay 技能系统** 是一个高度灵活的框架，可用于构建你可能会在 RPG 或 MOBA 游戏中看到的技能和属性类型。你可以构建可供游戏中的角色使用的动作或被动技能，使这些动作导致各种属性累积或损耗的状态效果，实现约束这些动作使用的"冷却"计时器或资源消耗，更改技能等级及每个技能等级的技能效果，激活粒子或音效，等等。简单来说，此系统可帮助你在任何现代 RPG 或 MOBA 游戏中设计、实现及高效关联各种游戏中的技能，既包括跳跃等简单技能，也包括你喜欢的角色的复杂技能集。
 
@@ -234,7 +235,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 - 对于**玩家/AI 控制的英雄角色**， `AbilitySystemComponent` (`ASC`) 将放在 `PlayerState` 类上
 - 对于**AI操控的小兵角色**， `ASC` 将放在 `Character` 类
 
->这么设计的原因参见 [技能系统组件 (Ability System Component)](#concepts-asc)
+>译者注：这么设计的原因参见后面的 [技能系统组件 (Ability System Component)](#concepts-asc)
 
 该项目旨在保持结构简洁的同时，展示技能系统（GAS）的基础功能，并通过注释详尽的代码实现常用技能。因其面向新手，未涉及发射物预测 [(predicting projectiles)](#concepts-p-spawn)之类的高级内容。
 
@@ -292,48 +293,61 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 
 <a name="setup"></a>
 
-## 3. Setting Up a Project Using GAS
-Basic steps to set up a project using GAS:
-1. Enable GameplayAbilitySystem plugin in the Editor
-1. Edit `YourProjectName.Build.cs` to add `"GameplayAbilities", "GameplayTags", "GameplayTasks"` to your `PrivateDependencyModuleNames`
-1. Refresh/Regenerate your Visual Studio project files
-1. Starting with 4.24 up to 5.2, it is mandatory to call `UAbilitySystemGlobals::Get().InitGlobalData()` to use [`TargetData`](#concepts-targeting-data). The Sample Project does this in `UAssetManager::StartInitialLoading()`. This is called automatically starting in 5.3. See [`InitGlobalData()`](#concepts-asg-initglobaldata) for more information.
+## 3. 使用 GAS 设置项目
+使用 GAS 配置项目的基础步骤:
 
-That's all that you have to do to enable GAS. From here, add an [`ASC`](#concepts-asc) and [`AttributeSet`](#concepts-as) to your `Character` or `PlayerState` and start making [`GameplayAbilities`](#concepts-ga) and [`GameplayEffects`](#concepts-ge)!
+1. 在编辑器中启用 GameplayAbilitySystem 插件
+1. 修改 `YourProjectName.Build.cs` 文件，在你的 `PrivateDependencyModuleNames` 中添加 `"GameplayAbilities", "GameplayTags", "GameplayTasks"` 
+1. 刷新/重新生成 Visual Studio 项目文件
+1. 初始化全局数据（仅限引擎版本 4.24 至 5.2）
+   - 若需使用  [`TargetData`](#concepts-targeting-data)，必须在代码中调用 `UAbilitySystemGlobals::Get().InitGlobalData()`。示例项目将此逻辑置于 `UAssetManager::StartInitialLoading()` 中。
+   - **注意**：引擎 5.3 及以上版本会自动调用此函数。详见 [`InitGlobalData()`](#concepts-asg-initglobaldata) 。
 
-**[⬆ Back to Top](#table-of-contents)**
+完成上述步骤即可启用 GAS。接下来，为 `Character` 或 `PlayerState` 添加 [`ASC`](#concepts-asc) 和  [`AttributeSet`](#concepts-as)，即可开始制作  [`GameplayAbilities`](#concepts-ga)  与 [`GameplayEffects`](#concepts-ge)！
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts"></a>
-## 4. GAS Concepts
 
-#### Sections
+## 4. 核心概念
 
-> 4.1 [Ability System Component](#concepts-asc)  
-> 4.2 [Gameplay Tags](#concepts-gt)  
-> 4.3 [Attributes](#concepts-a)  
-> 4.4 [Attribute Set](#concepts-as)  
-> 4.5 [Gameplay Effects](#concepts-ge)  
-> 4.6 [Gameplay Abilities](#concepts-ga)  
-> 4.7 [Ability Tasks](#concepts-at)  
-> 4.8 [Gameplay Cues](#concepts-gc)  
-> 4.9 [Ability System Globals](#concepts-asg)  
-> 4.10 [Prediction](#concepts-p)
+#### 章节
+
+> 4.1 [技能系统组件 (Ability System Component)](#concepts-asc)  
+> 4.2 [游戏标签 (Gameplay Tags)](#concepts-gt)  
+> 4.3 [属性 (Attributes)](#concepts-a)  
+> 4.4 [属性集 (Attribute Set)](#concepts-as)  
+> 4.5 [Gameplay 效果 (Gameplay Effects)](#concepts-ge)  
+> 4.6 [GamePlay 技能 (Gameplay Abilities)](#concepts-ga)  
+> 4.7 [技能任务 (Ability Tasks)](#concepts-at)  
+> 4.8 [Gameplay 提示 (Gameplay Cues)](#concepts-gc)  
+> 4.9 [技能系统全局 (Ability System Globals)](#concepts-asg)  
+> 4.10 [预测 (Prediction)](#concepts-p)
 
 <a name="concepts-asc"></a>
-### 4.1 Ability System Component
-The `AbilitySystemComponent` (`ASC`) is the heart of GAS. It's a `UActorComponent` ([`UAbilitySystemComponent`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UAbilitySystemComponent/index.html)) that handles all interactions with the system. Any `Actor` that wishes to use [`GameplayAbilities`](#concepts-ga), have [`Attributes`](#concepts-a), or receive [`GameplayEffects`](#concepts-ge) must have one `ASC` attached to them. These objects all live inside of and are managed and replicated by (with the exception of `Attributes` which are replicated by their [`AttributeSet`](#concepts-as)) the `ASC`. Developers are expected but not required to subclass this.
 
-The `Actor` with the `ASC` attached to it is referred to as the `OwnerActor` of the `ASC`. The physical representation `Actor` of the `ASC` is called the `AvatarActor`. The `OwnerActor` and the `AvatarActor` can be the same `Actor` as in the case of a simple AI minion in a MOBA game. They can also be different `Actors` as in the case of a player controlled hero in a MOBA game where the `OwnerActor` is the `PlayerState` and the `AvatarActor` is the hero's `Character` class. Most `Actors` will have the `ASC` on themselves. If your `Actor` will respawn and need persistence of `Attributes` or `GameplayEffects` between spawns (like a hero in a MOBA), then the ideal location for the `ASC` is on the `PlayerState`.
+### 4.1 技能系统组件 (Ability System Component)
 
-**Note:** If your `ASC` is on your `PlayerState`, then you will need to increase the `NetUpdateFrequency` of your `PlayerState`. It defaults to a very low value on the `PlayerState` and can cause delays or perceived lag before changes to things like `Attributes` and `GameplayTags` happen on the clients. Be sure to enable [`Adaptive Network Update Frequency`](https://docs.unrealengine.com/en-US/Gameplay/Networking/Actors/Properties/index.html#adaptivenetworkupdatefrequency), Fortnite uses it.
+**技能系统组件**（`AbilitySystemComponent`，简称 **ASC**）是 GAS 的核心模块。作为继承自 `UActorComponent` 的组件（[`UAbilitySystemComponent`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/API/Plugins/GameplayAbilities/UAbilitySystemComponent?application_version=5.3)），它负责处理与系统的所有交互。任何需要使用 [`GameplayAbilities`](#concepts-ga)、持有 [`Attributes`](#concepts-a) 或接收  [`GameplayEffects`](#concepts-ge)  的 `Actor` 都必须挂载 ASC。这些对象均存在于 `ASC` 内部，并由其管理和同步（`Attributes` 的同步由其 [`AttributeSet`](#concepts-as)) 处理）。开发者可（非必须）通过子类化扩展 ASC 的功能。
 
-Both, the `OwnerActor` and the `AvatarActor` if different `Actors`, should implement the `IAbilitySystemInterface`. This interface has one function that must be overriden, `UAbilitySystemComponent* GetAbilitySystemComponent() const`, which returns a pointer to its `ASC`. `ASCs` interact with each other internally to the system by looking for this interface function.
+附加了 `ASC` 的 `Actor` 被称为 `ASC` 的 `OwnerActor`。ASC 的物理表现 `Actor` 称为 `AvatarActor`。`OwnerActor` 和 `AvatarActor` 可以是同一个 `Actor`（例如 MOBA 游戏中的简单 AI 小兵），也可以是不同的 `Actor`（例如 MOBA 游戏中玩家控制的英雄，其中 `OwnerActor` 是 `PlayerState`，`AvatarActor` 是英雄的 `Character` 类）。大多数 `Actor` 都会将 `ASC` 附加在自己身上。若 `Actor` 需要重生且在重生时保留 `Attributes` 或 `GameplayEffects`（如 MOBA 中的英雄），则 `ASC` 的理想位置是放在 `PlayerState` 上。
 
-The `ASC` holds its current active `GameplayEffects` in `FActiveGameplayEffectsContainer ActiveGameplayEffects`.
+**注意：** 若 `ASC` 放在 `PlayerState` 上，则需提高 `PlayerState` 的 `NetUpdateFrequency`。`PlayerState` 的默认值非常低，可能导致客户端同步 `Attributes` 和 `GameplayTags` 的变更时出现延迟或卡顿。请确保启用 [`自适应型网络更新频率(Adaptive Network Update Frequency)`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/property-replication-in-unreal-engine?application_version=5.2#自适应型网络更新频率)（《堡垒之夜》就使用了此功能）。
 
-The `ASC` holds its granted `Gameplay Abilities` in `FGameplayAbilitySpecContainer ActivatableAbilities`. Any time that you plan to iterate over `ActivatableAbilities.Items`, be sure to add `ABILITYLIST_SCOPE_LOCK();` above your loop to lock the list from changing (due to removing an ability). Every `ABILITYLIST_SCOPE_LOCK();` in scope increments `AbilityScopeLockCount` and then decrements when it falls out of scope. Do not try to remove an ability inside the scope of `ABILITYLIST_SCOPE_LOCK();` (the clear ability functions check `AbilityScopeLockCount` internally to prevent removing abilities if the list is locked).
+>译者注：关于 `NetUpdateFrequency`
+>
+>- 服务器不会在每次更新时复制 actor。这会消耗太多的带宽和 CPU 资源。实际上，服务器会按照 `AActor::NetUpdateFrequency` 属性指定的频度来复制 actor。（参见 [Actor 的 Role 和 RemoteRole 属性](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/actor-role-and-remote-role-in-unreal-engine?application_version=5.3#复制模式))
+>- 减少 `NetUpdateFrequency` 值：actor 的更新次数越少，更新所用的时间就越短。最好是尽量压低这个数值。该数值代表了这个 actor 每秒复制到客户端的频度 (参见 [性能与带宽注意事项](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/performance-and-bandwidth-tips-for-unreal-engine?application_version=5.3))
+>- 如果需要使用 `NetUpdateFrequency`，直接在构造函数中设置即可，如 `NetUpdateFrequency = 100.f`，注意 100 是个很高的值，应根据实际情况调整
+
+若 `OwnerActor` 和 `AvatarActor` 是不同 `Actor`，两者均应实现 `IAbilitySystemInterface` 接口。此接口需重写一个函数：`UAbilitySystemComponent* GetAbilitySystemComponent() const`，返回其 `ASC` 的指针。系统内部通过此接口函数实现 `ASC` 之间的交互。
+
+`ASC` 将其当前生效的 `GameplayEffects` 存储在 `FActiveGameplayEffectsContainer ActiveGameplayEffects` 中。
+
+`ASC` 将已授予的 `GameplayAbilities` 存储在 `FGameplayAbilitySpecContainer ActivatableAbilities` 中。若需遍历 `ActivatableAbilities.Items`，务必在循环前添加 `ABILITYLIST_SCOPE_LOCK();` 以锁定列表（防止因移除技能导致列表变化）。每个 `ABILITYLIST_SCOPE_LOCK();` 会递增 `AbilityScopeLockCount`，并在作用域结束后递减。**不要在 `ABILITYLIST_SCOPE_LOCK();` 作用域内尝试移除技能**（清除技能的函数内部会检查 `AbilityScopeLockCount`，防止列表锁定时移除技能）。
 
 <a name="concepts-asc-rm"></a>
+
 ### 4.1.1 复制模式
 The `ASC` defines three different replication modes for replicating `GameplayEffects`, `GameplayTags`, and `GameplayCues` - `Full`, `Mixed`, and `Minimal`. `Attributes` are replicated by their `AttributeSet`.
 
