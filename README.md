@@ -1,4 +1,4 @@
-最近在学 GAS，但可惜几乎没官方文档，[tranek/GASDocumentation](https://github.com/BillEliot/GASDocumentation) 是个非常好的文档，但可惜是全英文的
+最近在学 GAS，但可惜几乎没官方文档，[tranek/GASDocumentation](https://github.com/tranek/GASDocumentation) 是个非常好的文档，但可惜是全英文的
 
 中文翻译目前看到两个 
 
