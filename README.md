@@ -365,25 +365,29 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
   - 若在 `OwnerActor` 不是 `PlayerState` 时使用 `Mixed` 模式，需调用 `SetOwner()` 手动设置。
 - **引擎版本 4.24+**：`PossessedBy()` 现在会自动将 `Pawn` 的 `Owner` 设为新 `Controller`。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-asc-setup"></a>
-### 4.1.2 Setup and Initialization
-`ASCs` are typically constructed in the `OwnerActor's` constructor and explicitly marked replicated. **This must be done in C++**.
+### 4.1.2 设置与初始化
+
+`ASCs` 通常在其 **`OwnerActor` 的构造函数** 中创建，并显式标记为可复制 (replicated)。**此操作必须在 C++ 中完成**。
 
 ```c++
 AGDPlayerState::AGDPlayerState()
 {
-	// Create ability system component, and set it to be explicitly replicated
+	// 创建技能系统组件，并显式设置为可复制
 	AbilitySystemComponent = CreateDefaultSubobject<UGDAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	//...
 }
 ```
 
-The `ASC` needs to be initialized with its `OwnerActor` and `AvatarActor` on both the server and the client. You want to initialize after the `Pawn's` `Controller` has been set (after possession). Single player games only need to worry about the server path.
+ASC 需在服务器和客户端上通过 **`OwnerActor`** 和 **`AvatarActor`** 进行初始化。初始化应在**设置 `Pawn` 的 `Controller` (被控制 (Possession)）后** 执行。单机游戏只需处理服务器路径。
 
-For player controlled characters where the `ASC` lives on the `Pawn`, I typically initialize on the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `PlayerController's` `AcknowledgePossession()` function.
+#### 场景 1：ASC 挂载在 Pawn 上（玩家控制角色）
+
+- **服务器端初始化**：在 `Pawn` 的 `PossessedBy()` 函数中完成。
+- **客户端初始化**：在 `PlayerController` 的 `AcknowledgePossession()` 函数中完成。
 
 ```c++
 void APACharacterBase::PossessedBy(AController * NewController)
@@ -392,11 +396,12 @@ void APACharacterBase::PossessedBy(AController * NewController)
 
 	if (AbilitySystemComponent)
 	{
+        // 初始化 ASC 的 OwnerActor 和 AvatarActor（此处均为 this）
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	}
 
-	// ASC MixedMode replication requires that the ASC Owner's Owner be the Controller.
-	SetOwner(NewController);
+	// Mixed 复制模式要求 OwnerActor 的 Owner 是 Controller
+	SetOwner(NewController); // 译者注:4.24 版本后可省略
 }
 ```
 
@@ -415,10 +420,13 @@ void APAPlayerControllerBase::AcknowledgePossession(APawn* P)
 }
 ```
 
-For player controlled characters where the `ASC` lives on the `PlayerState`, I typically initialize the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `Pawn's` `OnRep_PlayerState()` function. This ensures that the `PlayerState` exists on the client.
+#### 场景 2：ASC 挂载在 PlayerState 上（玩家控制角色）
+
+- **服务器端初始化**：在 `Pawn` 的 `PossessedBy()` 函数中完成。
+- **客户端初始化**：在 `Pawn` 的 `OnRep_PlayerState()` 函数中完成（确保客户端已存在 PlayerState）。
 
 ```c++
-// Server only
+// 仅服务端
 void AGDHeroCharacter::PossessedBy(AController * NewController)
 {
 	Super::PossessedBy(NewController);
@@ -426,10 +434,10 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 	AGDPlayerState* PS = GetPlayerState<AGDPlayerState>();
 	if (PS)
 	{
-		// Set the ASC on the Server. Clients do this in OnRep_PlayerState()
+		// 在服务端设置 ASC，客户端在 OnRep_PlayerState() 中处理
 		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
-		// AI won't have PlayerControllers so we can init again here just to be sure. No harm in initing twice for heroes that have PlayerControllers.
+		// AI 没有 PlayerController，可再次初始化确保正确。初始化两次对具有 PlayerController 的英雄无害
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 	}
 	
@@ -438,7 +446,7 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 ```
 
 ```c++
-// Client only
+// 仅客户端
 void AGDHeroCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
@@ -446,10 +454,10 @@ void AGDHeroCharacter::OnRep_PlayerState()
 	AGDPlayerState* PS = GetPlayerState<AGDPlayerState>();
 	if (PS)
 	{
-		// Set the ASC for clients. Server does this in PossessedBy.
+		// 客户端设置 ASC（服务器在 PossessedBy 中处理）
 		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
-		// Init ASC Actor Info for clients. Server will init its ASC when it possesses a new Actor.
+		// 客户端初始化 ASC 的 Actor 信息. 服务端将在控制一个新的 Actor 时初始化它的 ASC
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 	}
 
@@ -457,9 +465,9 @@ void AGDHeroCharacter::OnRep_PlayerState()
 }
 ```
 
-If you get the error message `LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!` then you did not initialize your `ASC` on the client.
+若出现警告 **`LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!`**，表明 **客户端未正确初始化 ASC**。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-gt"></a>
 ### 4.2 Gameplay Tags
