@@ -349,17 +349,21 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 <a name="concepts-asc-rm"></a>
 
 ### 4.1.1 复制模式
-The `ASC` defines three different replication modes for replicating `GameplayEffects`, `GameplayTags`, and `GameplayCues` - `Full`, `Mixed`, and `Minimal`. `Attributes` are replicated by their `AttributeSet`.
 
-| Replication Mode | When to Use                             | Description                                                  |
-| ---------------- | --------------------------------------- | ------------------------------------------------------------ |
-| `Full`           | Single Player                           | Every `GameplayEffect` is replicated to every client.        |
-| `Mixed`          | Multiplayer, player controlled `Actors` | `GameplayEffects` are only replicated to the owning client. Only `GameplayTags` and `GameplayCues` are replicated to everyone. |
-| `Minimal`        | Multiplayer, AI controlled `Actors`     | `GameplayEffects` are never replicated to anyone. Only `GameplayTags` and `GameplayCues` are replicated to everyone. |
+ `ASC` 定义了三种不同的复制模式，用于同步 `GameplayEffects`、`GameplayTags` 和 `GameplayCues`：**`Full`（全复制）**、**`Mixed`（混合复制）** 和 **`Minimal`（最小复制）**。`Attributes` 的同步由其 `AttributeSet` 处理。
 
-**Note:** `Mixed` replication mode expects the `OwnerActor's` `Owner` to be the `Controller`. `PlayerState's` `Owner` is the `Controller` by default but `Character's` is not. If using `Mixed` replication mode with the `OwnerActor` not the `PlayerState`, then you need to call `SetOwner()` on the `OwnerActor` with a valid `Controller`.
+| 复制模式  | 适用场景                     | 描述                                                         |
+| --------- | ---------------------------- | ------------------------------------------------------------ |
+| `Full`    | 单机游戏                     | 所有 `GameplayEffect` 会同步到每个客户端。                   |
+| `Mixed`   | 多人游戏，玩家控制的 `Actor` | `GameplayEffects` 仅同步到所属客户端。`GameplayTags` 和 `GameplayCues` 同步到所有客户端。 |
+| `Minimal` | 多人游戏，AI 控制的 `Actor`  | `GameplayEffects` 不向任何客户端同步。仅 `GameplayTags` 和 `GameplayCues` 同步到所有客户端。 |
 
-Starting with 4.24, `PossessedBy()` now sets the owner of the `Pawn` to the new `Controller`.
+**注意：**
+
+- **`Mixed` 模式要求**：`OwnerActor` 的 `Owner` 必须是 `Controller`。
+  - `PlayerState` 的 `Owner` 默认是 `Controller`，但 `Character` 的 `Owner` 不是。
+  - 若在 `OwnerActor` 不是 `PlayerState` 时使用 `Mixed` 模式，需调用 `SetOwner()` 手动设置。
+- **引擎版本 4.24+**：`PossessedBy()` 现在会自动将 `Pawn` 的 `Owner` 设为新 `Controller`。
 
 **[⬆ Back to Top](#table-of-contents)**
 
