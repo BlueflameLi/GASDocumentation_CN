@@ -470,66 +470,73 @@ void AGDHeroCharacter::OnRep_PlayerState()
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-gt"></a>
-### 4.2 Gameplay Tags
-[`FGameplayTags`](https://docs.unrealengine.com/en-US/API/Runtime/GameplayTags/FGameplayTag/index.html) are hierarchical names in the form of `Parent.Child.Grandchild...` that are registered with the `GameplayTagManager`. These tags are incredibly useful for classifying and describing the state of an object. For example, if a character is stunned, we could give it a `State.Debuff.Stun` `GameplayTag` for the duration of the stun.
+### 4.2 游戏标签 (Gameplay Tags)
 
-You will find yourself replacing things that you used to handle with booleans or enums with `GameplayTags` and doing boolean logic on whether or not objects have certain `GameplayTags`.
+[`FGameplayTags`](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/GameplayTags/FGameplayTag?application_version=5.3) 是以 `Parent.Child.Grandchild...` 形式注册到 `GameplayTagManager` 的层级化命名标签。这些标签在对象状态分类与描述中极为实用。例如，若角色被眩晕，可在眩晕期间为其添加一个 `State.Debuff.Stun` 的 `GameplayTag` 。
 
-When giving tags to an object, we typically add them to its `ASC` if it has one so that GAS can interact with them. `UAbilitySystemComponent` implements the `IGameplayTagAssetInterface` giving functions to access its owned `GameplayTags`.
+开发者通常会逐步将原本用布尔值或枚举处理的逻辑替换为 `GameplayTags`，并通过判断对象是否拥有特定标签实现逻辑控制。
 
-Multiple `GameplayTags` can be stored in an `FGameplayTagContainer`. It is preferable to use a `GameplayTagContainer` over a `TArray<FGameplayTag>` since the `GameplayTagContainers` add some efficiency magic. While tags are standard `FNames`, they can be efficiently packed together in `FGameplayTagContainers` for replication if `Fast Replication` is enabled in the project settings. `Fast Replication` requires that the server and the clients have the same list of `GameplayTags`. This generally shouldn't be a problem so you should enable this option. `GameplayTagContainers` can also return a `TArray<FGameplayTag>` for iteration.
+为对象赋予标签时，通常将其添加到其 `ASC`（若存在）中，以便 GAS 能够与之交互。`UAbilitySystemComponent` 实现了 `IGameplayTagAssetInterface` 接口，提供访问其持有的 `GameplayTags` 的功能。
 
-`GameplayTags` stored in `FGameplayTagCountContainer` have a `TagMap` that stores the number of instances of that `GameplayTag`. A `FGameplayTagCountContainer` may still have the `GameplayTag` in it but its `TagMapCount` is zero. You may encounter this while debugging if an `ASC` still has a `GameplayTag`. Any of the `HasTag()` or `HasMatchingTag()` or similar functions will check the `TagMapCount` and return false if the `GameplayTag` is not present or its `TagMapCount` is zero.
+多个 `GameplayTags` 可存储在 `FGameplayTagContainer` 中。相较于 `TArray<FGameplayTag>`，更推荐使用 `GameplayTagContainer`，因为后者具备高效优化机制。虽然标签本质是 `FName`，但若在项目设置中启用 `Fast Replication`（快速复制），`GameplayTagContainers` 可将标签高效打包以优化网络同步。启用此功能需确保服务器与客户端拥有相同的 `GameplayTags` 列表（通常无冲突，建议启用）。`GameplayTagContainers` 也可返回 `TArray<FGameplayTag>` 供遍历使用。
 
-`GameplayTags` must be defined ahead of time in the `DefaultGameplayTags.ini`. The Unreal Engine Editor provides an interface in the project settings to let developers manage `GameplayTags` without needing to manually edit the `DefaultGameplayTags.ini`. The `GameplayTag` editor can create, rename, search for references, and delete `GameplayTags`.
+存储在 `FGameplayTagCountContainer` 中的 `GameplayTags` 拥有记录该标签实例数量的 `TagMap`。即使 `TagMapCount` 为零，`FGameplayTagCountContainer` 仍可能保留该 `GameplayTag`。调试时可能遇到 `ASC` 仍持有 `GameplayTag` 但 `TagMapCount` 为零的情况。`HasTag()`、`HasMatchingTag()` 等函数会检查 `TagMapCount`，若 `GameplayTag` 不存在或其 `TagMapCount` 为零则返回 false。
+
+`GameplayTags` 必须预先在 `DefaultGameplayTags.ini` 中定义。虚幻引擎编辑器在项目设置中提供了管理界面，开发者无需手动编辑该文件即可管理 `GameplayTags`。通过 `GameplayTag` 编辑器可创建、重命名、搜索引用及删除 `GameplayTags`。
 
 ![GameplayTag Editor in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytageditor.png)
 
-Searching for `GameplayTag` references will bring up the familiar `Reference Viewer` graph in the Editor showing all the assets that reference the `GameplayTag`. This will not however show any C++ classes that reference the `GameplayTag`.
+搜索 `GameplayTag` 引用时，编辑器将显示开发者熟知的 `Reference Viewer`（引用查看器）图表界面，显示所有引用该标签的资源。但此方法不会显示引用该 `GameplayTag` 的 C++ 类
 
-Renaming `GameplayTags` creates a redirect so that assets still referencing the original `GameplayTag` can redirect to the new `GameplayTag`. I prefer if possible to instead create a new `GameplayTag`, update all the references manually to the new `GameplayTag`, and then delete the old `GameplayTag` to avoid creating a redirect.
+重命名 `GameplayTags` 会创建重定向，以便仍引用原始 `GameplayTag` 的资源可以重定向到新标签。如果可能，我更倾向于创建新 `GameplayTag`，手动将所有引用更新到新标签，然后删除旧标签以避免创建重定向。
 
-In addition to `Fast Replication`, the `GameplayTag` editor has an option to fill in commonly replicated `GameplayTags` to optimize them further.
+除 `Fast Replication` 外，`GameplayTag` 编辑器还提供填充常用复制 `GameplayTags` 的选项以进一步优化性能。
 
-`GameplayTags` are replicated if they're added from a `GameplayEffect`. The `ASC` allows you to add `LooseGameplayTags` that are not replicated and must be managed manually. The Sample Project uses a `LooseGameplayTag` for `State.Dead` so that the owning clients can immediately respond to when their health drops to zero. Respawning manually sets the `TagMapCount` back to zero. Only manually adjust the `TagMapCount` when working with `LooseGameplayTags`. It is preferable to use the `UAbilitySystemComponent::AddLooseGameplayTag()` and `UAbilitySystemComponent::RemoveLooseGameplayTag()` functions than manually adjusting the `TagMapCount`.
+`GameplayTag` 在通过 `GameplayEffect` 添加时会进行复制。`ASC` 允许添加不进行复制且需手动管理的 `LooseGameplayTag`（松散游戏标签）。示例项目使用  `LooseGameplayTag` 来作为 `State.Dead` ，以便拥有客户端在生命值归零时立即响应。重生时会手动将 `TagMapCount` 重置为零。仅在处理 `LooseGameplayTag` 时需要手动调整 `TagMapCount`。推荐使用 `UAbilitySystemComponent::AddLooseGameplayTag()` 和 `UAbilitySystemComponent::RemoveLooseGameplayTag()` 函数而非手动调整 `TagMapCount`。
 
-Getting a reference to a `GameplayTag` in C++:
+在 C++ 中获取 `GameplayTag` 的引用：
+
 ```c++
 FGameplayTag::RequestGameplayTag(FName("Your.GameplayTag.Name"))
 ```
 
-For advanced `GameplayTag` manipulation like getting the parent or children `GameplayTags`, look at the functions offered by the `GameplayTagManager`. To access the `GameplayTagManager`, include `GameplayTagManager.h` and call it with `UGameplayTagManager::Get().FunctionName`. The `GameplayTagManager` actually stores the `GameplayTags` as relational nodes (parent, child, etc) for faster processing than constant string manipulation and comparisons.
+若需进行高级操作，例如获取父/子标签，请使用 `GameplayTagManager` 提供的函数。要访问 `GameplayTagManager` 需包含 `GameplayTagManager.h` 头文件，并调用 `UGameplayTagManager::Get().FunctionName`。`GameplayTagManager` 实际上将 `GameplayTags` 存储为关系节点（父子级等），相比频繁的字符串操作和比较，此方式处理速度更快。
 
-`GameplayTags` and `GameplayTagContainers` can have the optional `UPROPERTY` specifier `Meta = (Categories = "GameplayCue")` that filters the tags in the Blueprint to show only `GameplayTags` that have the parent tag of `GameplayCue`. This is useful when you know the `GameplayTag` or `GameplayTagContainer` variable should only be used for `GameplayCues`.
+`GameplayTags` 和 `GameplayTagContainers` 可添加可选的 `UPROPERTY` 说明符 `Meta = (Categories = "GameplayCue")`，用于在蓝图中过滤标签，仅显示父标签为 `GameplayCue` 的 `GameplayTags`。当确定该 `GameplayTag` 或 `GameplayTagContainer` 变量仅用于 `GameplayCues`（游戏提示）时，此功能非常实用。
 
-Alternatively, there's a separate structure called `FGameplayCueTag` that encapsulates a `FGameplayTag` and also automatically filters `GameplayTags` in Blueprint to only show those tags with the parent tag of `GameplayCue`.
+此外，另有一个独立结构体 `FGameplayCueTag`，其封装了 `FGameplayTag` 并自动在蓝图中过滤 `GameplayTags`，仅显示父标签为 `GameplayCue` 的标签。
 
-If you want to filter a `GameplayTag` parameter in a function, use the `UFUNCTION` specifier `Meta = (GameplayTagFilter = "GameplayCue")`. `GameplayTagContainer` parameters in functions can not be filtered. If you would like to edit your engine to allow this, look at how `SGameplayTagGraphPin::ParseDefaultValueData()` from `Engine\Plugins\Editor\GameplayTagsEditor\Source\GameplayTagsEditor\Private\SGameplayTagGraphPin.cpp` calls `FilterString = UGameplayTagsManager::Get().GetCategoriesMetaFromField(PinStructType);` and passes `FilterString` to `SGameplayTagWidget` in `SGameplayTagGraphPin::GetListContent()`. The `GameplayTagContainer` version of these functions in `Engine\Plugins\Editor\GameplayTagsEditor\Source\GameplayTagsEditor\Private\SGameplayTagContainerGraphPin.cpp` do not check for the meta field properties and pass along the filter.
+若需在函数中过滤 `GameplayTag` 参数，可使用 `UFUNCTION` 说明符 `Meta = (GameplayTagFilter = "GameplayCue")`。函数中的 `GameplayTagContainer` 参数无法被过滤。如需修改引擎以实现此功能，请参考以下引擎代码实现：
+- `Engine\Plugins\Editor\GameplayTagsEditor\Source\GameplayTagsEditor\Private\SGameplayTagGraphPin.cpp` 中 `SGameplayTagGraphPin::ParseDefaultValueData()` 如何调用 `FilterString = UGameplayTagsManager::Get().GetCategoriesMetaFromField(PinStructType);` 
+- 以及 `SGameplayTagGraphPin::GetListContent()` 中如何将 `FilterString` 传递至 `SGameplayTagWidget`。
+- `Engine\Plugins\Editor\GameplayTagsEditor\Source\GameplayTagsEditor\Private\SGameplayTagContainerGraphPin.cpp` 中对应的 `GameplayTagContainer` 版本函数未检查元字段属性，也未传递过滤器。
 
-The Sample Project extensively uses `GameplayTags`.
+示例项目广泛使用了 `GameplayTags`。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-gt-change"></a>
-### 4.2.1 Responding to Changes in Gameplay Tags
-The `ASC` provides a delegate for when `GameplayTags` are added or removed. It takes in a `EGameplayTagEventType` that can specify only to fire when the `GameplayTag` is added/removed or for any change in the `GameplayTag's` `TagMapCount`.
+### 4.2.1 响应标签变化
+
+`ASC` 提供了在 `GameplayTag` 被添加或移除时触发的委托。该委托接收一个 `EGameplayTagEventType` 参数，可指定仅在 `GameplayTag` 被添加/移除时触发，或对 `TagMapCount` 的任何变更都作出响应。
 
 ```c++
 AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDPlayerState::StunTagChanged);
 ```
 
-The callback function has a parameter for the `GameplayTag` and the new `TagCount`.
+回调函数包含 `GameplayTag` 参数和新的 `TagCount` 值：
 ```c++
 virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 ```
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-gt-loadfromplugin"></a>
-### 4.2.2 Loading Gameplay Tags from Plugin .ini Files
-If you create a plugin with its own .ini files with `GameplayTags`, you can load that plugin's `GameplayTag` .ini directory in your plugin's `StartupModule()` function.
+### 4.2.2 从插件.ini文件加载游戏标签
 
-For example, this is how the CommonConversation plugin that comes with Unreal Engine does it:
+若您创建的插件包含自定义的 `GameplayTags` 的 .ini 文件，可在插件的 `StartupModule()` 函数中加载该插件的 `GameplayTag` .ini 目录。
+
+以下示例展示了虚幻引擎内置的 CommonConversation 插件实现方式：
 
 ```c++
 void FCommonConversationRuntimeModule::StartupModule()
@@ -543,11 +550,12 @@ void FCommonConversationRuntimeModule::StartupModule()
 }
 ```
 
-This would look for the directory `Plugins\CommonConversation\Config\Tags` and load any .ini files with `GameplayTags` in them into your project when the Engine starts up if the plugin is enabled.
+当插件启用且引擎启动时，此代码会搜索 `Plugins\CommonConversation\Config\Tags` 目录，并将包含 `GameplayTags` 的 .ini 文件加载至项目中。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-a"></a>
+
 ### 4.3 Attributes
 
 <a name="concepts-a-definition"></a>
