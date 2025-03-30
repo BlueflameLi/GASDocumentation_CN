@@ -524,7 +524,7 @@ FGameplayTag::RequestGameplayTag(FName("Your.GameplayTag.Name"))
 AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDPlayerState::StunTagChanged);
 ```
 
-回调函数包含 `GameplayTag` 参数和新的 `TagCount` 值：
+回调函数包含 `GameplayTag` 和新的 `TagCount` 参数：
 ```c++
 virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 ```
