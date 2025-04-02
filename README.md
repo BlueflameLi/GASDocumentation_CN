@@ -43,7 +43,7 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.1.2 [设置与初始化](#concepts-asc-setup)  
 >       4.2 [Gameplay标签 (Gameplay Tags)](#concepts-gt)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.1 [响应标签变化](#concepts-gt-change)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.2 [从插件.ini文件加载Gameplay标签](#concepts-gt-loadfromplugin)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.2 [从插件 .ini文件加载 Gameplay标签](#concepts-gt-loadfromplugin)  
 >       4.3 [属性 (Attributes)](#concepts-a)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.1 [属性定义](#concepts-a-definition)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.2 [基础值 vs 当前值 (BaseValue vs CurrentValue)](#concepts-a-value)  
@@ -71,7 +71,7 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4 [Gameplay效果修饰器 (Modifiers)](#concepts-ge-mods)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4.1 [乘除修饰器 (Multiply and Divide Modifiers)](#concepts-ge-mods-multiplydivide)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4.2 [修饰器上的游戏标签](#concepts-ge-mods-gameplaytags)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.5 [堆叠 Gameplay 效果 (Stacking)](#concepts-ge-stacking)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.5 [堆叠 (Stacking) Gameplay效果](#concepts-ge-stacking)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.6 [授予技能 (Granted Abilities)](#concepts-ge-ga)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.7 [Gameplay效果标签](#concepts-ge-tags)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.8 [免疫](#concepts-ge-immunity)  
@@ -86,8 +86,8 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.3 [基于临时变量的计算修饰器 (Backing Data Temporary Variable Calculation Modifier)](#concepts-ge-ec-senddata-backingdatatempvariable)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.4 [Gameplay效果上下文 (Gameplay Effect Context)](#concepts-ge-ec-senddata-effectcontext)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.13 [自定义应用需求 (Custom Application Requirement)](#concepts-ge-car)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.14 [花费型 Gameplay效果 (Cost)](#concepts-ge-cost)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15 [冷却型 Gameplay效果 (Cooldown)](#concepts-ge-cooldown)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.14 [花费型 (Cost) Gameplay效果](#concepts-ge-cost)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15 [冷却型 (Cooldown) Gameplay效果 ](#concepts-ge-cooldown)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.1 [获取 Gameplay效果剩余冷却时间](#concepts-ge-cooldown-tr)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.2 [监听冷却开始与结束](#concepts-ge-cooldown-listen)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.3 [预测冷却](#concepts-ge-cooldown-prediction)  
@@ -99,7 +99,7 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1.1 [复制策略 (Replication Policy)](#concepts-ga-definition-reppolicy)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1.2 [服务器端遵循远程技能撤销 (Server Respects Remote Ability Cancellation)](#concepts-ga-definition-remotecancel)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1.3 [直接输入复制 (Replicate Input Directly)](#concepts-ga-definition-repinputdirectly)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.2 [绑定输入到ASC](#concepts-ga-input)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.2 [绑定输入到 ASC](#concepts-ga-input)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.2.1 [绑定输入但不激活技能](#concepts-ga-input-noactivate)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.3 [授予技能](#concepts-ga-granting)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.4 [激活技能](#concepts-ga-activating)  
@@ -139,7 +139,7 @@
 >       4.10 [预测 (Prediction)](#concepts-p)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.1 [预测键 (Prediction Key)](#concepts-p-key)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.2 [在技能中创建新预测窗口](#concepts-p-windows)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.3 [预测生成Actor](#concepts-p-spawn)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.3 [预测生成 Actor](#concepts-p-spawn)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.4 [GAS 中预测的未来](#concepts-p-future)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.5 [网络预测插件 (Network Prediction Plugin)](#concepts-p-npp)  
 >       4.11 [目标选择 (Targeting)](#concepts-targeting)  
@@ -154,14 +154,14 @@
 >    5.3 [瞄准 (Aim Down Sights)](#cae-ads)  
 >    5.4 [生命窃取 (Lifesteal)](#cae-ls)  
 >    5.5 [在客户端与服务端中生成随机数](#cae-random)  
->    5.6 [暴击(Critical Hits)](#cae-crit)  
+>    5.6 [暴击 (Critical Hits)](#cae-crit)  
 >    5.7 [非堆叠 Gameplay效果但仅最大值实际影响目标](#cae-nonstackingge)  
 >    5.8 [游戏暂停时生成目标数据 (Target Data)](#cae-paused)  
->    5.9 [ (单按键交互系统)One Button Interaction System](#cae-onebuttoninteractionsystem)  
+>    5.9 [单按键交互系统 (One Button Interaction System)](#cae-onebuttoninteractionsystem)  
 > 1. [调试 GAS](#debugging)  
 >    6.1 [showdebug abilitysystem](#debugging-sd)  
 >    6.2 [Gameplay 调试器 (Gameplay Debugger)](#debugging-gd)  
->    6.3 [GAS 日志 ((Logging))](#debugging-log)  
+>    6.3 [GAS 日志 (Logging)](#debugging-log)  
 > 1. [优化](#optimizations)  
 >    7.1 [技能批处理](#optimizations-abilitybatching)  
 >    7.2 [Gameplay提示批处理](#optimizations-gameplaycuebatching)  
@@ -170,17 +170,17 @@
 >    7.5 [ASC 懒加载](#optimizations-asclazyloading)  
 > 1. [易用性改进建议 (Quality of Life Suggestions)](#qol)  
 >    8.1 [Gameplay效果容器](#qol-gameplayeffectcontainers)  
->    8.2 [将蓝图异步任务 (AsyncTask)绑定到 ASC 委托](#qol-asynctasksascdelegates)  
+>    8.2 [将蓝图异步任务 (AsyncTask) 绑定到 ASC 委托](#qol-asynctasksascdelegates)  
 > 1. [故障排除](#troubleshooting)  
 >    9.1 [`LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!`](#troubleshooting-notlocal)  
 >    9.2 [`ScriptStructCache` 错误](#troubleshooting-scriptstructcache)  
 >    9.3 [动画蒙太奇未复制到客户端](#troubleshooting-replicatinganimmontages)  
 >    9.4 [复制蓝图 Actor 时 AttributeSets 设为 nullptr](#troubleshooting-duplicatingblueprintactors)  
->    9.5 [未解析的外部符号UEPushModelPrivate::MarkPropertyDirty(int,int)](#troubleshooting-unresolvedexternalsymbolmarkpropertydirty)  
+>    9.5 [未解析的外部符号 UEPushModelPrivate::MarkPropertyDirty(int,int)](#troubleshooting-unresolvedexternalsymbolmarkpropertydirty)  
 >    9.6 [枚举名现在以路径名表示](#troubleshooting-enumnamesarenowpathnames)  
 > 1. [常用 GAS 缩写](#acronyms)
 > 1. [其他资源](#resources)  
->    11.1 [Epic Games的Dave Ratti 问答](#resources-daveratti)  
+>    11.1 [Epic Games 的 Dave Ratti 问答](#resources-daveratti)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.1 [社区问题 1](#resources-daveratti-community1)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.2 [社区问题 2](#resources-daveratti-community2)  
 > 1. [GAS 更新日志](#changelog)  
@@ -200,20 +200,20 @@
 
 >**Gameplay 技能系统** 是一个高度灵活的框架，可用于构建你可能会在 RPG 或 MOBA 游戏中看到的技能和属性类型。你可以构建可供游戏中的角色使用的动作或被动技能，使这些动作导致各种属性累积或损耗的状态效果，实现约束这些动作使用的"冷却"计时器或资源消耗，更改技能等级及每个技能等级的技能效果，激活粒子或音效，等等。简单来说，此系统可帮助你在任何现代 RPG 或 MOBA 游戏中设计、实现及高效关联各种游戏中的技能，既包括跳跃等简单技能，也包括你喜欢的角色的复杂技能集。
 
-GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。已在《Paragon》《Fortnite》等多款商业 AAA 游戏中经过实战检验。
+GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。已在《帕拉贡》《堡垒之夜》等多款商业 AAA 游戏中经过实战检验。
 
 该插件为单人和多人游戏提供了开箱即用的解决方案：
 * 实现基于等级的角色能力或技能，附带可选的花费型和冷却型机制 ([GameplayAbilities](#concepts-ga))
-* 管理属于 Actor 的数值型 `Attributes`  ([Attributes](#concepts-a))
+* 管理属于 Actor 的数值型 `Attributes` ([Attributes](#concepts-a))
 * 为 Actor 应用状态效果 ([GameplayEffects](#concepts-ge))
-* 为 Actor 应用 `GameplayTags`  ([GameplayTags](#concepts-gt))
+* 为 Actor 应用 **Gameplay标签** ([GameplayTags](#concepts-gt))
 * 生成视觉或声音效果 ([GameplayCues](#concepts-gc))
 * 上述所有功能的网络复制 (Replication)
 
 在多人游戏中，GAS 提供对以下内容的客户端预测 ([client-side prediction](#concepts-p) ) 支持:
 * 技能激活
 * 播放动画蒙太奇
-*  对 `Attributes` 的修改
+*  对 **属性(Attributes)** 的修改
 * 应用 `GameplayTags`
 * 生成 `GameplayCues`
 * 通过连接于 `CharacterMovementComponent` 的 `RootMotionSource` 函数形成的移动
@@ -233,11 +233,11 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 本文档附带一个多人第三人称射击游戏示例项目，主要面向**初次接触 GameplayAbilitySystem 插件但具备虚幻引擎基础**的开发者。要求使用者掌握 C++、蓝图 (Blueprints)、虚幻示意图形 (UMG)、网络复制 (Replication) 等中级知识。该项目演示了如何构建一个基础且适用于多人联机的第三人称射击游戏框架：
 
 - 对于**玩家/AI 控制的英雄角色**， `AbilitySystemComponent` (`ASC`) 将放在 `PlayerState` 类上
-- 对于**AI操控的小兵角色**， `ASC` 将放在 `Character` 类
+- 对于 **AI 操控的小兵角色**， `ASC` 将放在 `Character` 类
 
 >译者注：这么设计的原因参见后面的 [技能系统组件 (Ability System Component)](#concepts-asc)
 
-该项目旨在保持结构简洁的同时，展示技能系统（GAS）的基础功能，并通过注释详尽的代码实现常用技能。因其面向新手，未涉及发射物预测 [(predicting projectiles)](#concepts-p-spawn)之类的高级内容。
+该项目旨在保持结构简洁的同时，展示技能系统 (GAS) 的基础功能，并通过注释详尽的代码实现常用技能。因其面向新手，未涉及 [发射物预测 (predicting projectiles)](#concepts-p-spawn) 之类的高级内容。
 
 演示概念：
 * `PlayerState` 与 `Character`上的 `ASC` 对比
@@ -246,8 +246,8 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 * `GameplayTags`
 * 在 `GameplayAbilitys` 内部和外部应用和移除 `GameplayEffects`.
 * 应用受护甲减伤后的伤害值以改变角色生命值
-* `GameplayEffectExecutionCalculations` (Gameplay效果执行计算)
-* 眩晕效果（Stun Effect）
+* Gameplay效果执行计算 (`GameplayEffectExecutionCalculations`)
+* 眩晕效果 (Stun Effect)
 * 死亡与重生机制
 * 通过服务端技能生成 Actor (发射物)
 * 当瞄准与冲刺时，预测性调整本地玩家速度
@@ -258,7 +258,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 * 目标选取（锁定 Actor）
 * 在蓝图中创建 `GameplayAbilities` 
 *  在 C++ 中创建 `GameplayAbilities`
-* 按  `Actor` 独立实例化 `GameplayAbilities`
+* 按 `Actor` 独立实例化 `GameplayAbilities`
 * 非实例化 `GameplayAbilities` (跳跃)
 * 静态 `GameplayCues` (如枪械命中粒子特效)
 * 基于 Actor 的 `GameplayCues` (冲刺与眩晕粒子特效)
@@ -279,7 +279,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 
 小兵单位无任何预先定义的 `GameplayAbilities`。 红色小兵拥有更高的生命恢复速度而蓝色小兵有更高的初始生命值
 
-对与 `GameplayAbility` 的命名，我使用 `_BP` 后缀来表示通过蓝图实现的`GameplayAbility` 逻辑。无后缀则表示逻辑通过 C++ 实现.
+对与 `GameplayAbility` 的命名，我使用 `_BP` 后缀来表示通过蓝图实现的 `GameplayAbility` 逻辑。无后缀则表示逻辑通过 C++ 实现.
 
 **蓝图资源命名前缀规范**
 
@@ -300,10 +300,10 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 1. 修改 `YourProjectName.Build.cs` 文件，在你的 `PrivateDependencyModuleNames` 中添加 `"GameplayAbilities", "GameplayTags", "GameplayTasks"` 
 1. 刷新/重新生成 Visual Studio 项目文件
 1. 初始化全局数据（仅限引擎版本 4.24 至 5.2）
-   - 若需使用  [`TargetData`](#concepts-targeting-data)，必须在代码中调用 `UAbilitySystemGlobals::Get().InitGlobalData()`。示例项目将此逻辑置于 `UAssetManager::StartInitialLoading()` 中。
+   - 若需使用 [`TargetData`](#concepts-targeting-data)，必须在代码中调用 `UAbilitySystemGlobals::Get().InitGlobalData()`。示例项目将此逻辑置于 `UAssetManager::StartInitialLoading()` 中。
    - **注意**：引擎 5.3 及以上版本会自动调用此函数。详见 [`InitGlobalData()`](#concepts-asg-initglobaldata) 。
 
-完成上述步骤即可启用 GAS。接下来，为 `Character` 或 `PlayerState` 添加 [`ASC`](#concepts-asc) 和  [`AttributeSet`](#concepts-as)，即可开始制作  [`GameplayAbilities`](#concepts-ga)  与 [`GameplayEffects`](#concepts-ge)！
+完成上述步骤即可启用 GAS。接下来，为 `Character` 或 `PlayerState` 添加 [`ASC`](#concepts-asc) 和 [`AttributeSet`](#concepts-as)，即可开始制作 [`GameplayAbilities`](#concepts-ga) 与 [`GameplayEffects`](#concepts-ge)！
 
 **[⬆ 回到顶部](#table-of-contents)**
 
@@ -328,7 +328,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 
 ### 4.1 技能系统组件 (Ability System Component)
 
-**技能系统组件**（`AbilitySystemComponent`，简称 **ASC**）是 GAS 的核心模块。作为继承自 `UActorComponent` 的组件（[`UAbilitySystemComponent`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/API/Plugins/GameplayAbilities/UAbilitySystemComponent?application_version=5.3)），它负责处理与系统的所有交互。任何需要使用 [`GameplayAbilities`](#concepts-ga)、持有 [`Attributes`](#concepts-a) 或接收  [`GameplayEffects`](#concepts-ge)  的 `Actor` 都必须挂载 ASC。这些对象均存在于 `ASC` 内部，并由其管理和同步（`Attributes` 的同步由其 [`AttributeSet`](#concepts-as)) 处理）。开发者可（非必须）通过子类化扩展 ASC 的功能。
+**技能系统组件**（`AbilitySystemComponent`，简称 **ASC**）是 GAS 的核心模块。作为继承自 `UActorComponent` 的组件 ([`UAbilitySystemComponent`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/API/Plugins/GameplayAbilities/UAbilitySystemComponent?application_version=5.3))，它负责处理与系统的所有交互。任何需要使用 [`GameplayAbilities`](#concepts-ga)、持有 [`Attributes`](#concepts-a) 或接收 [`GameplayEffects`](#concepts-ge) 的 `Actor` 都必须挂载 ASC。这些对象均存在于 `ASC` 内部，并由其管理和同步（`Attributes` 的同步由其 [`AttributeSet`](#concepts-as)) 处理）。开发者可（非必须）通过子类化扩展 ASC 的功能。
 
 附加了 `ASC` 的 `Actor` 被称为 `ASC` 的 `OwnerActor`。ASC 的物理表现 `Actor` 称为 `AvatarActor`。`OwnerActor` 和 `AvatarActor` 可以是同一个 `Actor`（例如 MOBA 游戏中的简单 AI 小兵），也可以是不同的 `Actor`（例如 MOBA 游戏中玩家控制的英雄，其中 `OwnerActor` 是 `PlayerState`，`AvatarActor` 是英雄的 `Character` 类）。大多数 `Actor` 都会将 `ASC` 附加在自己身上。若 `Actor` 需要重生且在重生时保留 `Attributes` 或 `GameplayEffects`（如 MOBA 中的英雄），则 `ASC` 的理想位置是放在 `PlayerState` 上。
 
@@ -486,7 +486,7 @@ void AGDHeroCharacter::OnRep_PlayerState()
 
 ![GameplayTag Editor in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytageditor.png)
 
-搜索 `GameplayTag` 引用时，编辑器将显示开发者熟知的 `Reference Viewer`（引用查看器）图表界面，显示所有引用该标签的资源。但此方法不会显示引用该 `GameplayTag` 的 C++ 类
+搜索 `GameplayTag` 引用时，编辑器将显示开发者熟知的 **引用查看器 (`Reference Viewer`)** 图表界面，显示所有引用该标签的资源。但此方法不会显示引用该 `GameplayTag` 的 C++ 类
 
 重命名 `GameplayTags` 会创建重定向，以便仍引用原始 `GameplayTag` 的资源可以重定向到新标签。如果可能，我更倾向于创建新 `GameplayTag`，手动将所有引用更新到新标签，然后删除旧标签以避免创建重定向。
 
