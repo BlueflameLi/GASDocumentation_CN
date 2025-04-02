@@ -41,9 +41,9 @@
 >       4.1 [技能系统组件 (Ability System Component)](#concepts-asc)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.1.1 [复制模式 (Replication Mode)](#concepts-asc-rm)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.1.2 [设置与初始化](#concepts-asc-setup)  
->       4.2 [游戏标签 (Gameplay Tags)](#concepts-gt)  
+>       4.2 [Gameplay标签 (Gameplay Tags)](#concepts-gt)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.1 [响应标签变化](#concepts-gt-change)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.2 [从插件.ini文件加载游戏标签 ](#concepts-gt-loadfromplugin)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.2 [从插件.ini文件加载Gameplay标签](#concepts-gt-loadfromplugin)  
 >       4.3 [属性 (Attributes)](#concepts-a)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.1 [属性定义](#concepts-a-definition)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.2 [基础值 vs 当前值 (BaseValue vs CurrentValue)](#concepts-a-value)  
@@ -64,38 +64,38 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.5 [PreAttributeChange()](#concepts-as-preattributechange)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.6 [PostGameplayEffectExecute()](#concepts-as-postgameplayeffectexecute)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.7 [OnAttributeAggregatorCreated()](#concepts-as-onattributeaggregatorcreated)  
->       4.5 [Gameplay 效果 (Gameplay Effects)](#concepts-ge)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.1 [Gameplay 效果定义](#concepts-ge-definition)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.2 [应用 Gameplay 效果](#concepts-ge-applying)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.3 [移除 Gameplay 效果](#concepts-ga-removing)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4 [Gameplay 效果修饰器 (Modifiers)](#concepts-ge-mods)  
+>       4.5 [Gameplay效果 (Gameplay Effects)](#concepts-ge)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.1 [Gameplay效果定义](#concepts-ge-definition)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.2 [应用 Gameplay效果](#concepts-ge-applying)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.3 [移除 Gameplay效果](#concepts-ga-removing)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4 [Gameplay效果修饰器 (Modifiers)](#concepts-ge-mods)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4.1 [乘除修饰器 (Multiply and Divide Modifiers)](#concepts-ge-mods-multiplydivide)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4.2 [修饰器上的游戏标签](#concepts-ge-mods-gameplaytags)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.5 [堆叠 Gameplay 效果 (Stacking)](#concepts-ge-stacking)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.6 [授予技能 (Granted Abilities)](#concepts-ge-ga)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.7 [Gameplay 效果标签](#concepts-ge-tags)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.7 [Gameplay效果标签](#concepts-ge-tags)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.8 [免疫](#concepts-ge-immunity)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.9 [Gameplay 效果规格 (Gameplay Effect Spec)](#concepts-ge-spec)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.9 [Gameplay效果规格 (Gameplay Effect Spec)](#concepts-ge-spec)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.9.1 [SetByCallers](#concepts-ge-spec-setbycaller)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.10 [Gameplay 效果上下文 (Gameplay Effect Context)](#concepts-ge-context)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.10 [Gameplay效果上下文 (Gameplay Effect Context)](#concepts-ge-context)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.11 [修饰量计算 (Modifier Magnitude Calculation)](#concepts-ge-mmc)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12 [Gameplay 效果执行计算 (Gameplay Effect Execution Calculation)](#concepts-ge-ec)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1 [向执行计算发送数据](#concepts-ge-ec-senddata)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.1 [SetByCaller](#concepts-ge-ec-senddata-setbycaller)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.2 [基于数据属性的计算修饰器 (Backing Data Attribute Calculation Modifier)](#concepts-ge-ec-senddata-backingdataattribute) 
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.3 [基于临时变量的计算修饰器 (Backing Data Temporary Variable Calculation Modifier)](#concepts-ge-ec-senddata-backingdatatempvariable)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.4 [Gameplay 效果上下文 (Gameplay Effect Context)](#concepts-ge-ec-senddata-effectcontext)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.12.1.4 [Gameplay效果上下文 (Gameplay Effect Context)](#concepts-ge-ec-senddata-effectcontext)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.13 [自定义应用需求 (Custom Application Requirement)](#concepts-ge-car)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.14 [花费型 Gameplay 效果 (Cost)](#concepts-ge-cost)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15 [冷却型 Gameplay 效果 (Cooldown)](#concepts-ge-cooldown)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.1 [获取 Gameplay 效果剩余冷却时间](#concepts-ge-cooldown-tr)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.14 [花费型 Gameplay效果 (Cost)](#concepts-ge-cost)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15 [冷却型 Gameplay效果 (Cooldown)](#concepts-ge-cooldown)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.1 [获取 Gameplay效果剩余冷却时间](#concepts-ge-cooldown-tr)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.2 [监听冷却开始与结束](#concepts-ge-cooldown-listen)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.15.3 [预测冷却](#concepts-ge-cooldown-prediction)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.16 [修改激活的 Gameplay 效果持续时间](#concepts-ge-duration)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.17 [运行时动态创建 Gameplay 效果](#concepts-ge-dynamic)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.18 [Gameplay 效果容器 (Gameplay Effect Containers)](#concepts-ge-containers)  
->       4.6 [GamePlay 技能 (Gameplay Abilities)](#concepts-ga)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1 [GamePlay 技能定义](#concepts-ga-definition)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.16 [修改激活的 Gameplay效果持续时间](#concepts-ge-duration)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.17 [运行时动态创建 Gameplay效果](#concepts-ge-dynamic)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.18 [Gameplay效果容器 (Gameplay Effect Containers)](#concepts-ge-containers)  
+>       4.6 [GamePlay技能 (Gameplay Abilities)](#concepts-ga)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1 [GamePlay技能定义](#concepts-ga-definition)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1.1 [复制策略 (Replication Policy)](#concepts-ga-definition-reppolicy)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1.2 [服务器端遵循远程技能撤销 (Server Respects Remote Ability Cancellation)](#concepts-ga-definition-remotecancel)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.1.3 [直接输入复制 (Replicate Input Directly)](#concepts-ga-definition-repinputdirectly)  
@@ -110,7 +110,7 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.7 [实例化策略](#concepts-ga-instancing)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.8 [网络执行策略](#concepts-ga-net)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.9 [技能标签](#concepts-ga-tags)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.10 [Gameplay 技能规格 (Gameplay Ability Spec)](#concepts-ga-spec)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.10 [Gameplay技能规格 (Gameplay Ability Spec)](#concepts-ga-spec)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.11 [向技能传递数据](#concepts-ga-data)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.12 [技能消耗与冷却](#concepts-ga-commit)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.13 [技能升级](#concepts-ga-leveling)  
@@ -122,18 +122,18 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.7.2 [自定义技能任务](#concepts-at-definition)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.7.3 [使用技能任务](#concepts-at-using)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.7.4 [根运动源能力任务 (Root Motion Source Ability Tasks)](#concepts-at-rms)  
->       4.8 [Gameplay 提示 (Gameplay Cues)](#concepts-gc)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.1 [Gameplay 提示定义](#concepts-gc-definition)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.2 [触发 Gameplay 提示](#concepts-gc-trigger)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.3 [本地 Gameplay 提示](#concepts-gc-local)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.4 [Gameplay 提示参数](#concepts-gc-parameters)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.5 [Gameplay 提示管理器 (Gameplay Cue Manager)](#concepts-gc-manager)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.6 [阻止 Gameplay 提示触发](#concepts-gc-prevention)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7 [Gameplay 提示批处理](#concepts-gc-batching)  
+>       4.8 [Gameplay提示 (Gameplay Cues)](#concepts-gc)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.1 [Gameplay提示定义](#concepts-gc-definition)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.2 [触发 Gameplay提示](#concepts-gc-trigger)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.3 [本地 Gameplay提示](#concepts-gc-local)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.4 [Gameplay提示参数](#concepts-gc-parameters)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.5 [Gameplay提示管理器 (Gameplay Cue Manager)](#concepts-gc-manager)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.6 [阻止 Gameplay提示触发](#concepts-gc-prevention)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7 [Gameplay提示批处理](#concepts-gc-batching)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7.1 [手动RPC](#concepts-gc-batching-manualrpc)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7.2 [单个GE上的多个GC](#concepts-gc-batching-gcsonge)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.8 [Gameplay 提示事件 (Gameplay Cue Events)](#concepts-gc-events)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.9 [Gameplay 提示可靠性](#concepts-gc-reliability)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.8 [Gameplay提示事件 (Gameplay Cue Events)](#concepts-gc-events)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.9 [Gameplay提示可靠性](#concepts-gc-reliability)  
 >       4.9 [技能系统全局 (Ability System Globals)](#concepts-asg)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.9.1 [InitGlobalData()](#concepts-asg-initglobaldata)  
 >       4.10 [预测 (Prediction)](#concepts-p)  
@@ -146,8 +146,8 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.1 [目标数据 (Target Data)](#concepts-targeting-data)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.2 [目标 Actor (Target Actors)](#concepts-targeting-actors)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.3 [目标数据过滤器 (Target Data Filters)](#concepts-target-data-filters)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.4 [Gameplay 技能世界标线 (Gameplay Ability World Reticles)](#concepts-targeting-reticles)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.5 [Gameplay 效果容器的目标选择](#concepts-targeting-containers)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.4 [Gameplay技能世界标线 (Gameplay Ability World Reticles)](#concepts-targeting-reticles)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.5 [Gameplay效果容器的目标选择](#concepts-targeting-containers)  
 > 1. [常见实现的能力与效果](#cae)  
 >    5.1 [击晕 (Stun)](#cae-stun)  
 >    5.2 [冲刺 (Sprint)](#cae-sprint)  
@@ -155,7 +155,7 @@
 >    5.4 [生命窃取 (Lifesteal)](#cae-ls)  
 >    5.5 [在客户端与服务端中生成随机数](#cae-random)  
 >    5.6 [暴击(Critical Hits)](#cae-crit)  
->    5.7 [非堆叠 Gameplay 效果但仅最大值实际影响目标](#cae-nonstackingge)  
+>    5.7 [非堆叠 Gameplay效果但仅最大值实际影响目标](#cae-nonstackingge)  
 >    5.8 [游戏暂停时生成目标数据 (Target Data)](#cae-paused)  
 >    5.9 [ (单按键交互系统)One Button Interaction System](#cae-onebuttoninteractionsystem)  
 > 1. [调试 GAS](#debugging)  
@@ -164,12 +164,12 @@
 >    6.3 [GAS 日志 ((Logging))](#debugging-log)  
 > 1. [优化](#optimizations)  
 >    7.1 [技能批处理](#optimizations-abilitybatching)  
->    7.2 [Gameplay 提示批处理](#optimizations-gameplaycuebatching)  
+>    7.2 [Gameplay提示批处理](#optimizations-gameplaycuebatching)  
 >    7.3 [ASC 复制模式 (Replication Mode)](#optimizations-ascreplicationmode)  
 >    7.4 [属性代理复制 (Attribute Proxy Replication)](#optimizations-attributeproxyreplication)  
 >    7.5 [ASC 懒加载](#optimizations-asclazyloading)  
 > 1. [易用性改进建议 (Quality of Life Suggestions)](#qol)  
->    8.1 [Gameplay 效果容器](#qol-gameplayeffectcontainers)  
+>    8.1 [Gameplay效果容器](#qol-gameplayeffectcontainers)  
 >    8.2 [将蓝图异步任务 (AsyncTask)绑定到 ASC 委托](#qol-asynctasksascdelegates)  
 > 1. [故障排除](#troubleshooting)  
 >    9.1 [`LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!`](#troubleshooting-notlocal)  
@@ -246,7 +246,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 * `GameplayTags`
 * 在 `GameplayAbilitys` 内部和外部应用和移除 `GameplayEffects`.
 * 应用受护甲减伤后的伤害值以改变角色生命值
-* `GameplayEffectExecutionCalculations` (Gameplay 效果执行计算)
+* `GameplayEffectExecutionCalculations` (Gameplay效果执行计算)
 * 眩晕效果（Stun Effect）
 * 死亡与重生机制
 * 通过服务端技能生成 Actor (发射物)
@@ -317,10 +317,10 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 > 4.2 [游戏标签 (Gameplay Tags)](#concepts-gt)  
 > 4.3 [属性 (Attributes)](#concepts-a)  
 > 4.4 [属性集 (Attribute Set)](#concepts-as)  
-> 4.5 [Gameplay 效果 (Gameplay Effects)](#concepts-ge)  
-> 4.6 [GamePlay 技能 (Gameplay Abilities)](#concepts-ga)  
+> 4.5 [Gameplay效果 (Gameplay Effects)](#concepts-ge)  
+> 4.6 [GamePlay技能 (Gameplay Abilities)](#concepts-ga)  
 > 4.7 [技能任务 (Ability Tasks)](#concepts-at)  
-> 4.8 [Gameplay 提示 (Gameplay Cues)](#concepts-gc)  
+> 4.8 [Gameplay提示 (Gameplay Cues)](#concepts-gc)  
 > 4.9 [技能系统全局 (Ability System Globals)](#concepts-asg)  
 > 4.10 [预测 (Prediction)](#concepts-p)
 
@@ -470,7 +470,7 @@ void AGDHeroCharacter::OnRep_PlayerState()
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-gt"></a>
-### 4.2 游戏标签 (Gameplay Tags)
+### 4.2 Gameplay标签 (Gameplay Tags)
 
 [`FGameplayTags`](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/GameplayTags/FGameplayTag?application_version=5.3) 是以 `Parent.Child.Grandchild...` 形式注册到 `GameplayTagManager` 的层级化命名标签。这些标签在对象状态分类与描述中极为实用。例如，若角色被眩晕，可在眩晕期间为其添加一个 `State.Debuff.Stun` 的 `GameplayTag` 。
 
@@ -556,40 +556,51 @@ void FCommonConversationRuntimeModule::StartupModule()
 
 <a name="concepts-a"></a>
 
-### 4.3 Attributes
+### 4.3 属性 (Attributes)
 
 <a name="concepts-a-definition"></a>
-#### 4.3.1 Attribute Definition
-`Attributes` are float values defined by the struct [`FGameplayAttributeData`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayAttributeData/index.html). These can represent anything from the amount of health a character has to the character's level to the number of charges that a potion has. If it is a gameplay-related numerical value belonging to an `Actor`, you should consider using an `Attribute` for it. `Attributes` should generally only be modified by [`GameplayEffects`](#concepts-ge) so that the ASC can [predict](#concepts-p) the changes.
+#### 4.3.1 属性定义
 
-`Attributes` are defined by and live in an [`AttributeSet`](#concepts-as). The `AttributeSet` is responsible for replicating `Attributes` that are marked for replication. See the section on [`AttributeSets`](#concepts-as) for how to define `Attributes`.
+**属性 (Attributes)** 是由结构体 [`FGameplayAttributeData`]([Unreal Engine 5.3 Documentation | Unreal Engine 5.3 Documentation | Epic Developer Community](https://dev.epicgames.com/documentation/en-us/unreal-engine?application_version=5.3)) 定义的浮点数值。这些数值可表示从角色的生命值到角色等级，再到药水的充能次数等任意内容。若某个数值是 `Actor` 拥有的与玩法相关的值，则应考虑将其定义为 `Attribute`。`Attributes` 通常应仅通过 **Gameplay效果 ([`GameplayEffects`](#concepts-ge))** 修改，以便技能系统组件 (ASC) 能够预测 ([Predict](#concepts-p)) 其变更。
 
-**Tip:** If you don't want an `Attribute` to show up in the Editor's list of `Attributes`, you can use the `Meta = (HideInDetailsView)` `property specifier`.
+`Attributes` 由 **属性集([`AttributeSet`](#concepts-as))** 定义并存储其中。`AttributeSet` 负责复制 (Replicate) 标记为需复制的 `Attributes`。定义 `Attributes` 的方法请参阅 [`AttributeSets`](#concepts-as) 章节。
 
-**[⬆ Back to Top](#table-of-contents)**
+**提示：** 若希望某个 `Attribute` 不显示在编辑器的 `Attributes` 列表中，可使用 `Meta = (HideInDetailsView)` 属性说明符 (`Property Specifier`)。
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-a-value"></a>
-#### 4.3.2 BaseValue vs CurrentValue
-An `Attribute` is composed of two values - a `BaseValue` and a `CurrentValue`. The `BaseValue` is the permanent value of the `Attribute` whereas the `CurrentValue` is the `BaseValue` plus temporary modifications from `GameplayEffects`. For example, your `Character` may have a movespeed `Attribute` with a `BaseValue` of 600 units/second. Since there are no `GameplayEffects` modifying the movespeed yet, the `CurrentValue` is also 600 u/s. If she gets a temporary 50 u/s movespeed buff, the `BaseValue` stays the same at 600 u/s while the `CurrentValue` is now 600 + 50 for a total of 650 u/s. When the movespeed buff expires, the `CurrentValue` reverts back to the `BaseValue` of 600 u/s.
 
-Often beginners to GAS will confuse `BaseValue` with a maximum value for an `Attribute` and try to treat it as such. This is an incorrect approach. Maximum values for `Attributes` that can change or are referenced in abilities or UI should be treated as separate `Attributes`. For hardcoded maximum and minimum values, there is a way to define a `DataTable` with `FAttributeMetaData` that can set maximum and minimum values, but Epic's comment above the struct calls it a "work in progress". See `AttributeSet.h` for more information. To prevent confusion, I recommend that maximum values that can be referenced in abilities or UI be made as separate `Attributes` and hardcoded maximum and minimum values that are only used for clamping `Attributes` be defined as hardcoded floats in the `AttributeSet`. Clamping of `Attributes` is discussed in [PreAttributeChange()](#concepts-as-preattributechange) for changes to the `CurrentValue` and [PostGameplayEffectExecute()](#concepts-as-postgameplayeffectexecute) for changes to the `BaseValue` from `GameplayEffects`.
+#### 4.3.2 基础值 vs 当前值 (BaseValue vs CurrentValue)
 
-Permanent changes to the `BaseValue` come from `Instant` `GameplayEffects` whereas `Duration` and `Infinite` `GameplayEffects` change the `CurrentValue`. Periodic `GameplayEffects` are treated like instant `GameplayEffects` and change the `BaseValue`.
+`Attribute` 由两个值构成 —— **基础值 (BaseValue)** 和 **当前值 (CurrentValue)**。`BaseValue` 是 `Attribute` 的永久值，而 `CurrentValue` 则是 `BaseValue` 加上来自 `GameplayEffects` 的临时修正。例如，你的角色可能拥有移动速度 `Attribute`，其 `BaseValue` 为 600 单位/秒。由于当前没有修改移速的`GameplayEffects`，`CurrentValue` 也保持为600 单位/秒。若角色获得临时 +50 单位/秒的移速增益，`BaseValue` 仍为 600 单位/秒，而 `CurrentValue` 将变为600+50=650 单位/秒。当增益效果结束时，`CurrentValue` 会恢复至 `BaseValue` 600 单位/秒。
 
-**[⬆ Back to Top](#table-of-contents)**
+刚接触GAS的开发者常常会将 **基础值 (BaseValue)** 误认为是 `Attribute` 的最大值，并试图将其作为上限使用。这种做法是错误的。对于需要在技能或 UI 中引用或变更最大值的 `Attributes`，应当将其定义为独立的 `Attributes`。对于硬编码的最大/最小值，可通过定义包含 `FAttributeMetaData` 的 **数据表(DataTable)** 来实现，但 Epic 在该结构体上方的注释称其为"开发中功能"。更多信息请参考 `AttributeSet.h` 。为避免混淆，建议：
+
+- 在技能或 UI 中需要引用的最大值应设为独立的 `Attributes`
+- 仅用于限制 (Clamp) `Attributes` 范围的硬编码最大/最小值应定义为 `AttributeSet` 中的硬编码浮点数
+
+关于 `Attributes` 限制 (Clamp) 的讨论参见：
+
+- **[PreAttributeChange()](#concepts-as-preattributechange)**：处理 **当前值（CurrentValue）**变更
+- **[PostGameplayEffectExecute()](#concepts-as-postgameplayeffectexecute)** ：处理来自 **Gameplay效果 (GameplayEffects)** 的 **基础值 (BaseValue)** 变更
+
+对 `BaseValue` 的永久性修改来自**即时型 (Instant)** 的 `GameplayEffects`，而 **持续型 (Duration)** 和 **无限型 (Infinite)** 的 `GameplayEffects` 则修改 `CurrentValue`。**周期性 (Periodic)** 的 `GameplayEffects` 按 **即时型 (Instant)** 的 `GameplayEffects` 处理，会改变 `BaseValue`。
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-a-meta"></a>
-#### 4.3.3 Meta Attributes
+#### 4.3.3 元属性 (Meta Attributes)
 Some `Attributes` are treated as placeholders for temporary values that are intended to interact with `Attributes`. These are called `Meta Attributes`. For example, we commonly define damage as a `Meta Attribute`. Instead of a `GameplayEffect` directly changing our health `Attribute`, we use a `Meta Attribute` called damage as a placeholder. This way the damage value can be modified with buffs and debuffs in an [`GameplayEffectExecutionCalculation`](#concepts-ge-ec) and can be further manipulated in the `AttributeSet`, for example subtracting the damage from a current shield `Attribute`, before finally subtracting the remainder from the health `Attribute`. The damage `Meta Attribute` has no persistence between `GameplayEffects` and is overriden by every one. `Meta Attributes` are not typically replicated.
 
 `Meta Attributes` provide a good logical separation for things like damage and healing between "How much damage did we do?" and "What do we do with this damage?". This logical separation means our `Gameplay Effects` and `Execution Calculations` don't need to know how the Target handles the damage. Continuing our damage example, the `Gameplay Effect` determines how much damage and then the `AttributeSet` decides what to do with that damage. Not all characters may have the same `Attributes`, especially if you use subclassed `AttributeSets`. The base `AttributeSet` class may only have a health `Attribute`, but a subclassed `AttributeSet` may add a shield `Attribute`. The subclassed `AttributeSet` with the shield `Attribute` would distribute the damage received differently than the base `AttributeSet` class.
 
 While `Meta Attributes` are a good design pattern, they are not mandatory. If you only ever have one `Execution Calculation` used for all instances of damage and one `Attribute Set` class shared by all characters, then you may be fine doing the damage distribution to health, shields, etc. inside of the `Execution Calculation` and directly modifying those `Attributes`. You'll only be sacrificing flexibility, but that may be okay for you.
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-a-changes"></a>
-#### 4.3.4 Responding to Attribute Changes
+#### 4.3.4 响应属性变化
 To listen for when an `Attribute` changes to update the UI or other gameplay, use `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`. This function returns a delegate that you can bind to that will be automatically called whenever an `Attribute` changes. The delegate provides a `FOnAttributeChangeData` parameter with the `NewValue`, `OldValue`, and `FGameplayEffectModCallbackData`. **Note:** The `FGameplayEffectModCallbackData` will only be set on the server.
 
 ```c++
@@ -606,10 +617,10 @@ A custom Blueprint node that wraps this into an `ASyncTask` is included in the S
 
 ![Listen for Attribute Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/attributechange.png)
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-a-derived"></a>
-#### 4.3.5 Derived Attributes
+#### 4.3.5 派生属性 (Derived Attributes)
 To make an `Attribute` that has some or all of its value derived from one or more other `Attributes`, use an `Infinite` `GameplayEffect` with one or more `Attribute Based` or [`MMC`](#concepts-ge-mmc) [`Modifiers`](#concepts-ge-mods). The `Derived Attribute` will update automatically when an `Attribute` that it depends on is updated.
 
 The final formula for all the `Modifiers` on a `Derived Attribute` is the same formula for `Modifier Aggregators`. If you need calculations to happen in a certain order, do it all inside of an `MMC`.
@@ -624,7 +635,7 @@ In this example, we have an `Infinite` `GameplayEffect` that derives the value o
 
 ![Derived Attribute Example](https://github.com/tranek/GASDocumentation/raw/master/Images/derivedattribute.png)
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as"></a>
 ### 4.4 Attribute Set
