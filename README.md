@@ -582,7 +582,7 @@ void FCommonConversationRuntimeModule::StartupModule()
 
 关于 `Attributes` 限制 (Clamp) 的讨论参见：
 
-- **[PreAttributeChange()](#concepts-as-preattributechange)**：处理 **当前值（CurrentValue）**变更
+- **[PreAttributeChange()](#concepts-as-preattributechange)**：处理 **当前值（CurrentValue）** 变更
 - **[PostGameplayEffectExecute()](#concepts-as-postgameplayeffectexecute)** ：处理来自 **Gameplay效果 (GameplayEffects)** 的 **基础值 (BaseValue)** 变更
 
 对 `BaseValue` 的永久性修改来自**即时型 (Instant)** 的 `GameplayEffects`，而 **持续型 (Duration)** 和 **无限型 (Infinite)** 的 `GameplayEffects` 则修改 `CurrentValue`。**周期性 (Periodic)** 的 `GameplayEffects` 按 **即时型 (Instant)** 的 `GameplayEffects` 处理，会改变 `BaseValue`。
@@ -632,7 +632,7 @@ virtual void HealthChanged(const FOnAttributeChangeData& Data);
 ((CurrentValue + Additive) * Multiplicitive) / Division
 ```
 
-**注意：**若在 PIE（Play In Editor，编辑器中播放）中进行多客户端测试，需在编辑器偏好设置中禁用 `Run Under One Process`（在单个进程下运行）选项，否则除首个客户端外的其他客户端上的独立 `Attributes` 更新时，`Derived Attributes` 将无法同步更新。
+**注意：** 若在 PIE（Play In Editor，编辑器中播放）中进行多客户端测试，需在编辑器偏好设置中禁用 `Run Under One Process`（在单个进程下运行）选项，否则除首个客户端外的其他客户端上的独立 `Attributes` 更新时，`Derived Attributes` 将无法同步更新。
 本例中，通过一个 `Infinite` 型 `GameplayEffect`，使 `TestAttrA` 的值按公式 `TestAttrA = (TestAttrA + TestAttrB) * ( 2 * TestAttrC)` 从 `TestAttrB` 和 `TestAttrC` 派生。当任一依赖的 `Attributes` 更新时，`TestAttrA` 将自动重新计算其值。
 
 ![Derived Attribute Example](https://github.com/tranek/GASDocumentation/raw/master/Images/derivedattribute.png)
