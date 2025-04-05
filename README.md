@@ -328,7 +328,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 
 ### 4.1 技能系统组件 (Ability System Component)
 
-**技能系统组件**（`AbilitySystemComponent`，简称 **ASC**）是 GAS 的核心模块。作为继承自 `UActorComponent` 的组件 ([`UAbilitySystemComponent`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/API/Plugins/GameplayAbilities/UAbilitySystemComponent?application_version=5.3))，它负责处理与系统的所有交互。任何需要使用 [`GameplayAbilities`](#concepts-ga)、持有 [`Attributes`](#concepts-a) 或接收 [`GameplayEffects`](#concepts-ge) 的 `Actor` 都必须挂载 ASC。这些对象均存在于 `ASC` 内部，并由其管理和同步（`Attributes` 的同步由其 [`AttributeSet`](#concepts-as)) 处理）。开发者可（非必须）通过子类化扩展 ASC 的功能。
+**技能系统组件**（`AbilitySystemComponent`，简称 **ASC**）是 GAS 的核心模块。作为继承自 `UActorComponent` 的组件 ([`UAbilitySystemComponent`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/API/Plugins/GameplayAbilities/UAbilitySystemComponent?application_version=5.3))，它负责处理与系统的所有交互。任何需要使用 [`GameplayAbilities`](#concepts-ga)、持有 [`Attributes`](#concepts-a) 或接收 [`GameplayEffects`](#concepts-ge) 的 `Actor` 都必须挂载 ASC。这些对象均存在于 `ASC` 内部，并由其管理和同步（`Attributes` 的同步由其 [`AttributeSet`](#concepts-as)) 处理）。开发者可（非必须）通过继承扩展 ASC 的功能。
 
 附加了 `ASC` 的 `Actor` 被称为 `ASC` 的 `OwnerActor`。ASC 的物理表现 `Actor` 称为 `AvatarActor`。`OwnerActor` 和 `AvatarActor` 可以是同一个 `Actor`（例如 MOBA 游戏中的简单 AI 小兵），也可以是不同的 `Actor`（例如 MOBA 游戏中玩家控制的英雄，其中 `OwnerActor` 是 `PlayerState`，`AvatarActor` 是英雄的 `Character` 类）。大多数 `Actor` 都会将 `ASC` 附加在自己身上。若 `Actor` 需要重生且在重生时保留 `Attributes` 或 `GameplayEffects`（如 MOBA 中的英雄），则 `ASC` 的理想位置是放在 `PlayerState` 上。
 
@@ -591,17 +591,19 @@ void FCommonConversationRuntimeModule::StartupModule()
 
 <a name="concepts-a-meta"></a>
 #### 4.3.3 元属性 (Meta Attributes)
-Some `Attributes` are treated as placeholders for temporary values that are intended to interact with `Attributes`. These are called `Meta Attributes`. For example, we commonly define damage as a `Meta Attribute`. Instead of a `GameplayEffect` directly changing our health `Attribute`, we use a `Meta Attribute` called damage as a placeholder. This way the damage value can be modified with buffs and debuffs in an [`GameplayEffectExecutionCalculation`](#concepts-ge-ec) and can be further manipulated in the `AttributeSet`, for example subtracting the damage from a current shield `Attribute`, before finally subtracting the remainder from the health `Attribute`. The damage `Meta Attribute` has no persistence between `GameplayEffects` and is overriden by every one. `Meta Attributes` are not typically replicated.
 
-`Meta Attributes` provide a good logical separation for things like damage and healing between "How much damage did we do?" and "What do we do with this damage?". This logical separation means our `Gameplay Effects` and `Execution Calculations` don't need to know how the Target handles the damage. Continuing our damage example, the `Gameplay Effect` determines how much damage and then the `AttributeSet` decides what to do with that damage. Not all characters may have the same `Attributes`, especially if you use subclassed `AttributeSets`. The base `AttributeSet` class may only have a health `Attribute`, but a subclassed `AttributeSet` may add a shield `Attribute`. The subclassed `AttributeSet` with the shield `Attribute` would distribute the damage received differently than the base `AttributeSet` class.
+一些 `Attributes` 被用作临时值的占位符，用于与其他 `Attributes` 交互。这些属性被称为 **元属性 (Meta Attributes)**。例如，我们通常将伤害值定义为 `Meta Attribute` 。我们不会让 `GameplayEffect` 直接修改生命值 `Attribute`，而是使用名为伤害值 (Damage) 的 `Meta Attribute` 作为占位符。这样，伤害值可以通过 [Gameplay效果执行计算 (`GameplayEffectExecutionCalculation`)](#concepts-ge-ec) 中的增益/减益效果进行修改，并可在 `AttributeSet` 中进一步处理，例如，先扣除护盾属性 (shield Attribute) 的值，再将剩余伤害从生命值属性中扣除。伤害值 `Meta Attribute` 不会在 `GameplayEffects` 之间持久保留，且每次都会被覆盖。`Meta Attributes` 通常不会被复制 (Replicated)。
 
-While `Meta Attributes` are a good design pattern, they are not mandatory. If you only ever have one `Execution Calculation` used for all instances of damage and one `Attribute Set` class shared by all characters, then you may be fine doing the damage distribution to health, shields, etc. inside of the `Execution Calculation` and directly modifying those `Attributes`. You'll only be sacrificing flexibility, but that may be okay for you.
+`Meta Attributes` 为伤害、治疗等逻辑提供了良好的分离，区分了“我们造成了多少伤害？”和“如何处理这些伤害？”。这种逻辑分离意味着 `Gameplay Effects` 和 `Execution Calculations` 无需了解目标如何处理伤害。以伤害为例：`Gameplay Effect` 决定伤害量，`AttributeSet` 决定如何处理该伤害。并非所有角色都拥有相同的 `Attributes`，尤其是当使用子类的 `AttributeSets` 时。`AttributeSet` 基类可能仅包含生命值 `Attribute`，而继承的子类 `AttributeSet` 可能添加护盾值 `Attribute`。拥有护盾值 `Attribute` 的子类 `AttributeSet` 会以不同于基类  `AttributeSet` 的方式分配受到的伤害。
+
+尽管 `Meta Attributes` 是优秀的设计模式，但并非强制使用。若所有伤害实例均使用同一个  `Execution Calculation`，且所有角色共享同一个 `Attribute Set`，则直接在 `Execution Calculation` 内部处理伤害分配（如生命值、护盾等）并直接修改这些 `Attributes` 是可行的。此方案仅会牺牲灵活性，但可能符合您的需求。 
 
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-a-changes"></a>
 #### 4.3.4 响应属性变化
-To listen for when an `Attribute` changes to update the UI or other gameplay, use `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`. This function returns a delegate that you can bind to that will be automatically called whenever an `Attribute` changes. The delegate provides a `FOnAttributeChangeData` parameter with the `NewValue`, `OldValue`, and `FGameplayEffectModCallbackData`. **Note:** The `FGameplayEffectModCallbackData` will only be set on the server.
+
+要监听`Attribute`（属性）变化并更新 UI 或触发其他游戏逻辑，可使用 `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`。此函数返回一个 **委托 (Delegate)**，可绑定至目标函数，当`Attribute`变化时自动触发。该委托提供 `FOnAttributeChangeData` 参数，包含 `NewValue`（新值）、`OldValue`（旧值）和`FGameplayEffectModCallbackData`（Gameplay效果修改回调数据）。**注意：**`FGameplayEffectModCallbackData` 仅服务器端有效。
 
 ```c++
 AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AGDPlayerState::HealthChanged);
@@ -611,9 +613,9 @@ AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase
 virtual void HealthChanged(const FOnAttributeChangeData& Data);
 ```
 
-The Sample Project binds to the `Attribute` value changed delegates on the `GDPlayerState` to update the HUD and to respond to player death when health reaches zero.
+示例项目在 `GDPlayerState` 中绑定 `Attribute` 值变化委托，用于更新 HUD 并在生命值归零时触发玩家死亡逻辑。
 
-A custom Blueprint node that wraps this into an `ASyncTask` is included in the Sample Project. It is used in the `UI_HUD` UMG Widget to update the health, mana, and stamina values. This `AsyncTask` will live forever until manually called `EndTask()`, which we do in the UMG Widget's `Destruct` event. See `AsyncTaskAttributeChanged.h/cpp`.
+示例项目还包含一个自定义蓝图节点，将此功能封装为 **异步任务 (`ASyncTask`)**，并在 `UI_HUD` UMG 控件中用于动态更新生命值、法力值和耐力值。此`AsyncTask` 将一直持续运行直至手动调用 `EndTask()`，示例中在 UMG 控件的 **析构 (Destruct)** 事件中执行。详见 `AsyncTaskAttributeChanged.h/cpp`。
 
 ![Listen for Attribute Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/attributechange.png)
 
@@ -621,17 +623,17 @@ A custom Blueprint node that wraps this into an `ASyncTask` is included in the S
 
 <a name="concepts-a-derived"></a>
 #### 4.3.5 派生属性 (Derived Attributes)
-To make an `Attribute` that has some or all of its value derived from one or more other `Attributes`, use an `Infinite` `GameplayEffect` with one or more `Attribute Based` or [`MMC`](#concepts-ge-mmc) [`Modifiers`](#concepts-ge-mods). The `Derived Attribute` will update automatically when an `Attribute` that it depends on is updated.
 
-The final formula for all the `Modifiers` on a `Derived Attribute` is the same formula for `Modifier Aggregators`. If you need calculations to happen in a certain order, do it all inside of an `MMC`.
+若需使一个 `Attribute` 的全部或部分值源自一个或多个其他 `Attributes`，可使用带有 `Attribute Based` 或 [`MMC`(Modifier Magnitude Calculation，修饰量计算)](#concepts-ge-mmc) [修饰符(Modifiers)](#concepts-ge-mods) 的 `Infinite` 型 `GameplayEffect`。当依赖的 `Attributes` 更新时，**派生属性 (Derived Attributes)** 将自动同步更新。
+
+所有作用于 `Derived Attribute` 的 `Modifiers` 的最终计算公式与 **修饰器聚合器 (Modifier Aggregators)** 的公式相同。若需按特定顺序执行计算，应全部在 `MMC` 内部完成。
 
 ```
 ((CurrentValue + Additive) * Multiplicitive) / Division
 ```
 
-**Note:** If playing with multiple clients in PIE, you need to disable `Run Under One Process` in the Editor Preferences otherwise the `Derived Attributes` will not update when their independent `Attributes` update on clients other than the first.
-
-In this example, we have an `Infinite` `GameplayEffect` that derives the value of `TestAttrA` from the `Attributes`, `TestAttrB` and `TestAttrC`, in the formula `TestAttrA = (TestAttrA + TestAttrB) * ( 2 * TestAttrC)`. `TestAttrA` recalculates its value automatically whenever any of the `Attributes` update their values.
+**注意：**若在 PIE（Play In Editor，编辑器中播放）中进行多客户端测试，需在编辑器偏好设置中禁用 `Run Under One Process`（在单个进程下运行）选项，否则除首个客户端外的其他客户端上的独立 `Attributes` 更新时，`Derived Attributes` 将无法同步更新。
+本例中，通过一个 `Infinite` 型 `GameplayEffect`，使 `TestAttrA` 的值按公式 `TestAttrA = (TestAttrA + TestAttrB) * ( 2 * TestAttrC)` 从 `TestAttrB` 和 `TestAttrC` 派生。当任一依赖的 `Attributes` 更新时，`TestAttrA` 将自动重新计算其值。
 
 ![Derived Attribute Example](https://github.com/tranek/GASDocumentation/raw/master/Images/derivedattribute.png)
 
