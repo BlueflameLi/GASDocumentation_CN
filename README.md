@@ -640,49 +640,55 @@ virtual void HealthChanged(const FOnAttributeChangeData& Data);
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as"></a>
-### 4.4 Attribute Set
+### 4.4 属性集 (Attribute Set)
 
 <a name="concepts-as-definition"></a>
-#### 4.4.1 Attribute Set Definition
-The `AttributeSet` defines, holds, and manages changes to `Attributes`. Developers should subclass from [`UAttributeSet`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UAttributeSet/index.html). Creating an `AttributeSet` in an `OwnerActor's` constructor automatically registers it with its `ASC`. **This must be done in C++**.
+#### 4.4.1 属性集定义
 
-**[⬆ Back to Top](#table-of-contents)**
+`AttributeSet` 用于定义、持有并管理 `Attributes` 的变更。开发者应从 [`UAttributeSet`](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/UAttributeSet?application_version=5.3) 继承。在 `OwnerActor` 的构造函数中创建 `AttributeSet` 时，其会自动注册到对应的 `ASC`。**此操作必须通过 C++ 实现**。
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-design"></a>
-#### 4.4.2 Attribute Set Design
-An `ASC` may have one or many `AttributeSets`. AttributeSets have negligible memory overhead so how many `AttributeSets` to use is an organizational decision left up to the developer.
 
-It is acceptable to have one large monolithic `AttributeSet` shared by every `Actor` in your game and only use attributes if needed while ignoring unused attributes.
+#### 4.4.2 属性集设计
 
-Alternatively, you may choose to have more than one `AttributeSet` representing groupings of `Attributes` that you selectively add to your `Actors` as needed. For example, you could have an `AttributeSet` for health related `Attributes`, an `AttributeSet` for mana related `Attributes`, and so on. In a MOBA game, heroes might need mana but minions might not. Therefore the heroes would get the mana `AttributeSet` and minions would not.
+一个 `ASC` 可以包含一个或多个 `AttributeSet`。属性集的内存开销可以忽略不计，因此具体使用多少个 `AttributeSets` 属于开发者的架构设计决策。
 
-Additionally, `AttributeSets` can be subclassed as another means of selectively choosing which `Attributes` an `Actor` has. `Attributes` are internally referred to as `AttributeSetClassName.AttributeName`. When you subclass an `AttributeSet`, all of the `Attributes` from the parent class will still have the parent class's name as the prefix.
+可接受的做法是：为游戏中所有 `Actor` 创建一个单一庞大的  `AttributeSet`，仅使用需要的属性而忽略未使用的属性。
 
-While you can have more than one `AttributeSet`, you should not have more than one `AttributeSet` of the same class on an `ASC`. If you have more than one `AttributeSet` from the same class, it won't know which `AttributeSet` to use and will just pick one.
+另一种方案是：根据属性分组创建多个 `AttributeSet`，按需选择性地添加到 `Actor`。例如，可以创建管理生命相关属性的 `AttributeSet`、管理法力相关属性的 `AttributeSet` 等。在 MOBA 游戏中，英雄单位可能需要法力属性，而小兵单位可能不需要。因此英雄单位将包含法力 `AttributeSet`，小兵单位则不包含。
+
+此外，可以通过继承 `AttributeSet` 来选择性决定 `Actor` 应具备哪些属性。属性在内部通过 `AttributeSetClassName.AttributeName` 的形式进行引用。当继承 `AttributeSet` 时，父类的所有属性仍会保留父类名称作为前缀。
+
+虽然可以拥有多个 `AttributeSet`，但同一个 `ASC` 中不应存在多个同一类的 `AttributeSet`。若存在多个同一类的 `AttributeSet`，系统将无法确定应使用哪个`AttributeSet`，并会随机选取其中
 
 <a name="concepts-as-design-subcomponents"></a>
-##### 4.4.2.1 Subcomponents with Individual Attributes
-In the scenario where you have multiple damageable components on a `Pawn` like individually damageable armor pieces, I recommend that if you know the maximum number of damageable components that a `Pawn` could have to make that many health `Attributes` on one `AttributeSet` - DamageableCompHealth0, DamageableCompHealth1, etc. to represent logical 'slots' for those damageable components. In your damageable component class instance, assign the slot number `Attribute` that can be read by `GameplayAbilities` or [`Executions`](#concepts-ge-ec) to know which `Attribute` to apply damage to. `Pawns` that have less than the maximum number or zero of damageable components are fine. Just because a `AttributeSet` has an `Attribute`, doesn't mean that you have to use it. Unused `Attributes` take up trivial amount of memory.
+##### 4.4.2.1 具有独立属性的子组件
 
-If your subcomponents need many `Attributes` each, there's potentially an unbounded number of subcomponents, the subcomponents can detach and be used by other players (e.g. weapons), or for any other reason this approach doesn't work for you, I'd recommend switching away from `Attributes` and instead store plain old floats on the components. See [Item Attributes](#concepts-as-design-itemattributes).
+当 `Pawn` 上存在多个可损组件（如可单独受损的护甲部件）时，若已知 `Pawn` 可能拥有的最大可损组件数量，建议在单个 `AttributeSet` 中创建对应数量的生命值`Attributes` —— 例如 `DamageableCompHealth0`、`DamageableCompHealth1` 等，以此表示这些可损组件的逻辑"插槽 (Slot)"。在可损组件类的实例中，分配一个可通过 `GameplayAbilities` 或 [`Executions` (Gameplay 效果执行)](#concepts-ge-ec) 读取的插槽编号 `Attribute`，以此确定应对哪个 `Attribute` 应用伤害。即使 `Pawn` 实际拥有的可损组件数量少于最大值或为零，该方案仍可正常运作。属性集拥有某个属性并不意味着必须使用它，未使用的属性仅占用极少内存。
+
+若你的每个子组件都需要携带大量 `Attributes`，或者子组件数量可以是无上限的，亦或者子组件可脱离并被其他玩家使用（如武器），或存在其他导致此方案不可行的情况，建议改用传统浮点数存储方案，而非 `Attributes`。具体实现可参考 [物品属性 (Item Attributes)](#concepts-as-design-itemattributes)。
 
 <a name="concepts-as-design-addremoveruntime"></a>
-##### 4.4.2.2 Adding and Removing AttributeSets at Runtime
-`AttributeSets` can be added and removed from an `ASC` at runtime; however, removing `AttributeSets` can be dangerous. For example, if an `AttributeSet` is removed on a client before the server and an `Attribute` value change is replicated to client, the `Attribute` won't find its `AttributeSet` and crash the game.
+##### 4.4.2.2 运行时添加/移除属性集
 
-On weapon add to inventory:
+`AttributeSet` 可在运行时 (runtime) 动态添加或移除出 `ASC`。然而移除 `AttributeSets` 存在危险性。例如，一个客户端在服务端之前移除了某个 `AttributeSet`，而此时该 `Attribute` 的数值变更又被复制 (replicate) 到客户端，该属性将无法找到对应的 `AttributeSet`，从而导致游戏崩溃。
+
+当武器被添加到库存时：
+
 ```c++
 AbilitySystemComponent->GetSpawnedAttributes_Mutable().AddUnique(WeaponAttributeSetPointer);
 AbilitySystemComponent->ForceReplication();
 ```
 
-On weapon remove from inventory:
+当武器从库存中被移除时：
 ```c++
 AbilitySystemComponent->GetSpawnedAttributes_Mutable().Remove(WeaponAttributeSetPointer);
 AbilitySystemComponent->ForceReplication();
 ```
 <a name="concepts-as-design-itemattributes"></a>
-##### 4.4.2.3 Item Attributes (Weapon Ammo)
+##### 4.4.2.3 物品属性 (武器弹药)
 There's a few ways to implement equippable items with `Attributes` (weapon ammo, armor durability, etc). All of these approaches store values directly on the item. This is necessary for items that can be equipped by more than one player over its lifetime.
 
 > 1. Use plain floats on the item (**Recommended**)
