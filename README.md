@@ -18,7 +18,7 @@
 >- **Replicated** 直译是复制，虚幻引擎官方文档也是翻译为复制，但基本是特指网络同步中的复制，所以有的地方会翻译成同步、网络同步或者网络复制，我这就还是按照复制翻译，所以除非是明显表达 copy 意思，否则都是特指网络复制
 >- 4.1 开头提到的 **自适应型网络更新频率 (Adaptive Network Update Frequency)** ，在 5.3 及以上的文档里已经没了，因此该链接修改为 5.2 版本的文档
 
-# GAS文档
+# GAS 文档
 
 我对 Unreal Engine 5 的 GameplayAbilitySystem 插件 (GAS)的理解，附带一个简单的多人示例项目。本文档非官方文档，项目与本人均与 Epic Games 无关联。不保证信息的准确性。
 
@@ -130,8 +130,8 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.5 [Gameplay提示管理器 (Gameplay Cue Manager)](#concepts-gc-manager)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.6 [阻止 Gameplay提示触发](#concepts-gc-prevention)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7 [Gameplay提示批处理](#concepts-gc-batching)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7.1 [手动RPC](#concepts-gc-batching-manualrpc)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7.2 [单个GE上的多个GC](#concepts-gc-batching-gcsonge)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7.1 [手动 RPC](#concepts-gc-batching-manualrpc)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.7.2 [单个 GE 上的多个 GC](#concepts-gc-batching-gcsonge)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.8 [Gameplay提示事件 (Gameplay Cue Events)](#concepts-gc-events)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.8.9 [Gameplay提示可靠性](#concepts-gc-reliability)  
 >       4.9 [技能系统全局 (Ability System Globals)](#concepts-asg)  
@@ -240,7 +240,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 该项目旨在保持结构简洁的同时，展示技能系统 (GAS) 的基础功能，并通过注释详尽的代码实现常用技能。因其面向新手，未涉及 [发射物预测 (predicting projectiles)](#concepts-p-spawn) 之类的高级内容。
 
 演示概念：
-* `PlayerState` 与 `Character`上的 `ASC` 对比
+* `PlayerState` 与 `Character` 上的 `ASC` 对比
 * 复制 `Attributes`
 * 复制动画蒙太奇
 * `GameplayTags`
@@ -332,7 +332,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 
 附加了 `ASC` 的 `Actor` 被称为 `ASC` 的 `OwnerActor`。ASC 的物理表现 `Actor` 称为 `AvatarActor`。`OwnerActor` 和 `AvatarActor` 可以是同一个 `Actor`（例如 MOBA 游戏中的简单 AI 小兵），也可以是不同的 `Actor`（例如 MOBA 游戏中玩家控制的英雄，其中 `OwnerActor` 是 `PlayerState`，`AvatarActor` 是英雄的 `Character` 类）。大多数 `Actor` 都会将 `ASC` 附加在自己身上。若 `Actor` 需要重生且在重生时保留 `Attributes` 或 `GameplayEffects`（如 MOBA 中的英雄），则 `ASC` 的理想位置是放在 `PlayerState` 上。
 
-**注意：** 若 `ASC` 放在 `PlayerState` 上，则需提高 `PlayerState` 的 `NetUpdateFrequency`。`PlayerState` 的默认值非常低，可能导致客户端同步 `Attributes` 和 `GameplayTags` 的变更时出现延迟或卡顿。请确保启用 [`自适应型网络更新频率(Adaptive Network Update Frequency)`](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/property-replication-in-unreal-engine?application_version=5.2#自适应型网络更新频率)（《堡垒之夜》就使用了此功能）。
+**注意：** 若 `ASC` 放在 `PlayerState` 上，则需提高 `PlayerState` 的 `NetUpdateFrequency`。`PlayerState` 的默认值非常低，可能导致客户端同步 `Attributes` 和 `GameplayTags` 的变更时出现延迟或卡顿。请确保启用 [自适应型网络更新频率(`Adaptive Network Update Frequency`)](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/property-replication-in-unreal-engine?application_version=5.2#自适应型网络更新频率)（《堡垒之夜》就使用了此功能）。
 
 >译者注：关于 `NetUpdateFrequency`
 >
@@ -532,7 +532,7 @@ virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-gt-loadfromplugin"></a>
-### 4.2.2 从插件.ini文件加载游戏标签
+### 4.2.2 从插件 .ini 文件加载游戏标签
 
 若您创建的插件包含自定义的 `GameplayTags` 的 .ini 文件，可在插件的 `StartupModule()` 函数中加载该插件的 `GameplayTag` .ini 目录。
 
@@ -573,9 +573,9 @@ void FCommonConversationRuntimeModule::StartupModule()
 
 #### 4.3.2 基础值 vs 当前值 (BaseValue vs CurrentValue)
 
-`Attribute` 由两个值构成 —— **基础值 (BaseValue)** 和 **当前值 (CurrentValue)**。`BaseValue` 是 `Attribute` 的永久值，而 `CurrentValue` 则是 `BaseValue` 加上来自 `GameplayEffects` 的临时修正。例如，你的角色可能拥有移动速度 `Attribute`，其 `BaseValue` 为 600 单位/秒。由于当前没有修改移速的`GameplayEffects`，`CurrentValue` 也保持为600 单位/秒。若角色获得临时 +50 单位/秒的移速增益，`BaseValue` 仍为 600 单位/秒，而 `CurrentValue` 将变为600+50=650 单位/秒。当增益效果结束时，`CurrentValue` 会恢复至 `BaseValue` 600 单位/秒。
+`Attribute` 由两个值构成 —— **基础值 (BaseValue)** 和 **当前值 (CurrentValue)**。`BaseValue` 是 `Attribute` 的永久值，而 `CurrentValue` 则是 `BaseValue` 加上来自 `GameplayEffects` 的临时修正。例如，你的角色可能拥有移动速度 `Attribute`，其 `BaseValue` 为 600 单位/秒。由于当前没有修改移速的 `GameplayEffects`，`CurrentValue` 也保持为 600 单位/秒。若角色获得临时 +50 单位/秒的移速增益，`BaseValue` 仍为 600 单位/秒，而 `CurrentValue` 将变为 600+50=650 单位/秒。当增益效果结束时，`CurrentValue` 会恢复至 `BaseValue` 600 单位/秒。
 
-刚接触GAS的开发者常常会将 **基础值 (BaseValue)** 误认为是 `Attribute` 的最大值，并试图将其作为上限使用。这种做法是错误的。对于需要在技能或 UI 中引用或变更最大值的 `Attributes`，应当将其定义为独立的 `Attributes`。对于硬编码的最大/最小值，可通过定义包含 `FAttributeMetaData` 的 **数据表(DataTable)** 来实现，但 Epic 在该结构体上方的注释称其为"开发中功能"。更多信息请参考 `AttributeSet.h` 。为避免混淆，建议：
+刚接触 GAS 的开发者常常会将 **基础值 (BaseValue)** 误认为是 `Attribute` 的最大值，并试图将其作为上限使用。这种做法是错误的。对于需要在技能或 UI 中引用或变更最大值的 `Attributes`，应当将其定义为独立的 `Attributes`。对于硬编码的最大/最小值，可通过定义包含 `FAttributeMetaData` 的 **数据表(DataTable)** 来实现，但 Epic 在该结构体上方的注释称其为"开发中功能"。更多信息请参考 `AttributeSet.h` 。为避免混淆，建议：
 
 - 在技能或 UI 中需要引用的最大值应设为独立的 `Attributes`
 - 仅用于限制 (Clamp) `Attributes` 范围的硬编码最大/最小值应定义为 `AttributeSet` 中的硬编码浮点数
@@ -603,7 +603,7 @@ void FCommonConversationRuntimeModule::StartupModule()
 <a name="concepts-a-changes"></a>
 #### 4.3.4 响应属性变化
 
-要监听`Attribute`（属性）变化并更新 UI 或触发其他游戏逻辑，可使用 `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`。此函数返回一个 **委托 (Delegate)**，可绑定至目标函数，当`Attribute`变化时自动触发。该委托提供 `FOnAttributeChangeData` 参数，包含 `NewValue`（新值）、`OldValue`（旧值）和`FGameplayEffectModCallbackData`（Gameplay效果修改回调数据）。**注意：**`FGameplayEffectModCallbackData` 仅服务器端有效。
+要监听 `Attribute`（属性）变化并更新 UI 或触发其他游戏逻辑，可使用 `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`。此函数返回一个 **委托 (Delegate)**，可绑定至目标函数，当 `Attribute` 变化时自动触发。该委托提供 `FOnAttributeChangeData` 参数，包含 `NewValue`（新值）、`OldValue`（旧值）和 `FGameplayEffectModCallbackData`（Gameplay效果修改回调数据）。**注意：**`FGameplayEffectModCallbackData` 仅服务器端有效。
 
 ```c++
 AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AGDPlayerState::HealthChanged);
@@ -615,7 +615,7 @@ virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 示例项目在 `GDPlayerState` 中绑定 `Attribute` 值变化委托，用于更新 HUD 并在生命值归零时触发玩家死亡逻辑。
 
-示例项目还包含一个自定义蓝图节点，将此功能封装为 **异步任务 (`ASyncTask`)**，并在 `UI_HUD` UMG 控件中用于动态更新生命值、法力值和耐力值。此`AsyncTask` 将一直持续运行直至手动调用 `EndTask()`，示例中在 UMG 控件的 **析构 (Destruct)** 事件中执行。详见 `AsyncTaskAttributeChanged.h/cpp`。
+示例项目还包含一个自定义蓝图节点，将此功能封装为 **异步任务 (`ASyncTask`)**，并在 `UI_HUD` UMG 控件中用于动态更新生命值、法力值和耐力值。此 `AsyncTask` 将一直持续运行直至手动调用 `EndTask()`，示例中在 UMG 控件的 **析构 (Destruct)** 事件中执行。详见 `AsyncTaskAttributeChanged.h/cpp`。
 
 ![Listen for Attribute Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/attributechange.png)
 
@@ -661,12 +661,12 @@ virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 此外，可以通过继承 `AttributeSet` 来选择性决定 `Actor` 应具备哪些属性。属性在内部通过 `AttributeSetClassName.AttributeName` 的形式进行引用。当继承 `AttributeSet` 时，父类的所有属性仍会保留父类名称作为前缀。
 
-虽然可以拥有多个 `AttributeSet`，但同一个 `ASC` 中不应存在多个同一类的 `AttributeSet`。若存在多个同一类的 `AttributeSet`，系统将无法确定应使用哪个`AttributeSet`，并会随机选取其中
+虽然可以拥有多个 `AttributeSet`，但同一个 `ASC` 中不应存在多个同一类的 `AttributeSet`。若存在多个同一类的 `AttributeSet`，系统将无法确定应使用哪个 `AttributeSet`，并会随机选取其中
 
 <a name="concepts-as-design-subcomponents"></a>
 ##### 4.4.2.1 具有独立属性的子组件
 
-当 `Pawn` 上存在多个可损组件（如可单独受损的护甲部件）时，若已知 `Pawn` 可能拥有的最大可损组件数量，建议在单个 `AttributeSet` 中创建对应数量的生命值`Attributes` —— 例如 `DamageableCompHealth0`、`DamageableCompHealth1` 等，以此表示这些可损组件的逻辑"插槽 (Slot)"。在可损组件类的实例中，分配一个可通过 `GameplayAbilities` 或 [`Executions` (Gameplay 效果执行)](#concepts-ge-ec) 读取的插槽编号 `Attribute`，以此确定应对哪个 `Attribute` 应用伤害。即使 `Pawn` 实际拥有的可损组件数量少于最大值或为零，该方案仍可正常运作。属性集拥有某个属性并不意味着必须使用它，未使用的属性仅占用极少内存。
+当 `Pawn` 上存在多个可损组件（如可单独受损的护甲部件）时，若已知 `Pawn` 可能拥有的最大可损组件数量，建议在单个 `AttributeSet` 中创建对应数量的生命值 `Attributes` —— 例如 `DamageableCompHealth0`、`DamageableCompHealth1` 等，以此表示这些可损组件的逻辑"插槽 (Slot)"。在可损组件类的实例中，分配一个可通过 `GameplayAbilities` 或 [Gameplay 效果执行 (`Executions`)](#concepts-ge-ec) 读取的插槽编号 `Attribute`，以此确定应对哪个 `Attribute` 应用伤害。即使 `Pawn` 实际拥有的可损组件数量少于最大值或为零，该方案仍可正常运作。属性集拥有某个属性并不意味着必须使用它，未使用的属性仅占用极少内存。
 
 若你的每个子组件都需要携带大量 `Attributes`，或者子组件数量可以是无上限的，亦或者子组件可脱离并被其他玩家使用（如武器），或存在其他导致此方案不可行的情况，建议改用传统浮点数存储方案，而非 `Attributes`。具体实现可参考 [物品属性 (Item Attributes)](#concepts-as-design-itemattributes)。
 
