@@ -56,9 +56,9 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.1 [具有独立属性的子组件](#concepts-as-design-subcomponents)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.2 [运行时添加/移除属性集](#concepts-as-design-addremoveruntime)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3 [物品属性 (武器弹药)](#concepts-as-design-itemattributes)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.1 [物品上的普通浮点数](#concepts-as-design-itemattributes-plainfloats)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.2 [物品上的 `AttributeSet`](#concepts-as-design-itemattributes-attributeset)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.3 [物品上的 `ASC`](#concepts-as-design-itemattributes-asc)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.1 [在物品类中使用普通浮点数](#concepts-as-design-itemattributes-plainfloats)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.2 [在物品类中使用 `AttributeSet`](#concepts-as-design-itemattributes-attributeset)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.3 [在物品类中使用 `ASC`](#concepts-as-design-itemattributes-asc)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.3 [定义属性](#concepts-as-attributes)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.4 [初始化属性](#concepts-as-init)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.5 [PreAttributeChange()](#concepts-as-preattributechange)  
@@ -689,17 +689,20 @@ AbilitySystemComponent->ForceReplication();
 ```
 <a name="concepts-as-design-itemattributes"></a>
 ##### 4.4.2.3 物品属性 (武器弹药)
-There's a few ways to implement equippable items with `Attributes` (weapon ammo, armor durability, etc). All of these approaches store values directly on the item. This is necessary for items that can be equipped by more than one player over its lifetime.
 
-> 1. Use plain floats on the item (**Recommended**)
-> 1. Separate `AttributeSet` on the item
-> 1. Separate `ASC` on the item
+有几种方法可以实现带有 `Attributes` 的可装备的物品（武器弹药、护甲耐久度等）。所有这些方法都将数值直接存储在物品本身上。对于在其生命周期内可能被多个玩家装备的物品，这是必要的。
+
+> 1. 在物品类中使用普通浮点数 (**推荐**)
+> 1. 在物品类中使用独立的 `AttributeSet` 
+> 1. 在物品类中使用独立的 `ASC`
 
 <a name="concepts-as-design-itemattributes-plainfloats"></a>
-###### 4.4.2.3.1 Plain Floats on the Item
-Instead of `Attributes`, store plain float values on the item class instance. Fortnite and [GASShooter](https://github.com/tranek/GASShooter) handle gun ammo this way. For a gun, store the max clip size, current ammo in clip, reserve ammo, etc directly as replicated floats (`COND_OwnerOnly`) on the gun instance. If weapons share reserve ammo, you would move the reserve ammo onto the character as an `Attribute` in a shared ammo `AttributeSet` (reload abilities can use a `Cost GE` to pull from reserve ammo into the gun's float clip ammo). Since you're not using `Attributes` for current clip ammo, you will need to override some functions in `UGameplayAbility` to check and apply cost against the floats on the gun. Making the gun the `SourceObject` in the [`GameplayAbilitySpec`](https://github.com/tranek/GASDocumentation#concepts-ga-spec) when granting the ability means you'll have access to the gun that granted the ability inside the ability.
 
-To prevent the gun from replicating back the ammo amount and clobbering the local ammo amount during automatic fire, disable replication while the player has a `IsFiring` `GameplayTag` in `PreReplication()`. You're essentially doing your own local prediction here.
+###### 4.4.2.3.1 在物品类中使用普通浮点数
+
+不使用 `Attributes`，而是在物品类实例上存储普通浮点数值。堡垒之夜和 [GASShooter](https://github.com/tranek/GASShooter) 就是这样处理武器弹药的。对于一把枪，直接在枪的实例上以可复制浮点数（`COND_OwnerOnly`）的形式存储最大弹匣容量、当前弹匣弹药、备用弹药等。如果多把武器共用同一备用弹药，你可以将备用弹药作为 `Attribute` 移动到角色身上，存储在角色共享的弹药 `AttributeSet` 中（换弹技能可以使用一个花费型 Gameplay效果 (`Cost GE`) 将弹药从备用弹药中转移到枪的浮点数弹匣弹药中）。因为你不使用 `Attributes` 来表示当前弹匣弹药，所以需要在 `UGameplayAbility` 中重写某些函数，以对枪上的浮点数弹药检查和应用花费。当授予技能时，将枪作为 [Gameplay技能规格 (`GameplayAbilitySpec`)](#concepts-ga-spec) 的 `SourceObject`（来源对象），这样在技能内部就能访问到授予该技能的枪。
+
+为防止枪支在自动射击期间弹药量复制回传并覆盖本地弹药量，可在 `PreReplication()` 中当玩家持有 `IsFiring` `GameplayTag` 时禁用复制。这本质上是实现自定义本地预测。
 
 ```c++
 void AGSWeapon::PreReplication(IRepChangedPropertyTracker& ChangedPropertyTracker)
@@ -711,18 +714,19 @@ void AGSWeapon::PreReplication(IRepChangedPropertyTracker& ChangedPropertyTracke
 }
 ```
 
-Benefits:
-1. Avoids limitations of using `AttributeSets` (see below)
+优势：
+1. 避免了使用 `AttributeSets` 的局限 (见下文)
 
-Limitations:
-1. Can not use existing `GameplayEffect` workflow (`Cost GEs` for ammo use, etc)
-1. Requires work to override key functions on `UGameplayAbility` to check and apply ammo costs against the gun's floats
+局限:
+1. 无法使用现用的 `GameplayEffect` 工作流（如用于弹药消耗的 `Cost GEs` 等）
+1. 需重写 `UGameplayAbility` 上的关键函数来实现对枪上浮点数弹药的检查和应用花费
 
 <a name="concepts-as-design-itemattributes-attributeset"></a>
-###### 4.4.2.3.2 `AttributeSet` on the Item
-Using a separate `AttributeSet` on the item that gets [added to the player's `ASC` on adding it to the player's inventory](#concepts-as-design-addremoveruntime) can work, but it has some major limitations. I had this working in early versions of [GASShooter](https://github.com/tranek/GASShooter) for the weapon ammo. The weapon stores its `Attributes` such as max clip size, current ammo in clip, reserve ammo, etc in an `AttributeSet` that lives on the weapon class. If weapons share reserve ammo, you would move the reserve ammo onto the character in a shared ammo `AttributeSet`. When a weapon is added to the player's inventory on the server, the weapon would add its `AttributeSet` to the player's `ASC::SpawnedAttributes`. The server would then replicate this down to the client. If the weapon is removed from the inventory, it would remove its `AttributeSet` from the `ASC::SpawnedAttributes`.
+###### 4.4.2.3.2 在物品类中使用  `AttributeSet`
 
-When the `AttributeSet` lives on something other than the `OwnerActor` (say a weapon), you'll initially get some compilation errors in the `AttributeSet`. The fix is to construct the `AttributeSet` in `BeginPlay()` instead of in the constructor and to implement `IAbilitySystemInterface` (set the pointer to the `ASC` when you add the weapon to the player inventory) on the weapon.
+在物品上类使用独立的 `AttributeSet`，可以通过 [在物品添加至玩家库存时添加到玩家的 `ASC`](#concepts-as-design-addremoveruntime) 实现，但存在一些主要限制。我在早期版本的 [GASShooter](https://github.com/tranek/GASShooter) 中曾以此方式实现武器弹药系统。武器将其 `Attributes` 如最大弹匣容量、当前弹匣弹药、备用弹药等存储在武器类的 `AttributeSet` 中。如果武器共用备用弹药，则将备用弹药移动到角色共享的弹药 `AttributeSet` 中。当在服务器上将武器添加到玩家库存时，武器会将其 `AttributeSet` 添加到玩家的 `ASC::SpawnedAttributes`。服务器随后将其复制到客户端。如果武器从库存中移除，则会从 `ASC::SpawnedAttributes` 中移除该 `AttributeSet`。
+
+当 `AttributeSet` 存在于（除 `OwnerActor` 之外的）其他对象上（例如武器）时，最初会在 `AttributeSet` 中遇到一些编译错误。解决方法是在 `BeginPlay()` 中构造 `AttributeSet`，而不是在构造函数中，并在武器上实现 `IAbilitySystemInterface`（当你将武器添加到玩家库存时设置指向 `ASC` 的指针）。
 
 ```c++
 void AGSWeapon::BeginPlay()
@@ -735,38 +739,39 @@ void AGSWeapon::BeginPlay()
 }
 ```
 
-You can see it in practice by checking out this [older version of GASShooter](https://github.com/tranek/GASShooter/tree/df5949d0dd992bd3d76d4a728f370f2e2c827735).
+具体实现可参考 [GASShooter历史版本](https://github.com/tranek/GASShooter/tree/df5949d0dd992bd3d76d4a728f370f2e2c827735)。
 
-Benefits:
-1. Can use existing `GameplayAbility` and `GameplayEffect` workflow (`Cost GEs` for ammo use, etc)
-1. Simple to setup for a very small set of items
+优势：
+1. 可以使用现有的 `GameplayAbility` 和 `GameplayEffect` 工作流（如用于弹药消耗的 `Cost GEs` 等）
+1. 对于极小数量的物品集设置简单
 
-Limitations:
-1. You have to make a new `AttributeSet` class for every weapon type. `ASCs` can only functionally have one `AttributeSet` instance of a class since changes to an `Attribute` look for the first instance of their `AttributeSet` class in the `ASCs` `SpawnedAttributes` array. Additional instances of the same `AttributeSet` class are ignored.
-1. You can only have one of each type of weapon in the player's inventory due to previous reason of one `AttributeSet` instance per `AttributeSet` class.
-1. Removing an `AttributeSet` is dangerous. In GASShooter if the player killed himself from a rocket, the player would immediately remove the rocket launcher from his inventory (including its `AttributeSet` from the `ASC`). When the server replicated that the rocket launcher's ammo `Attribute` changed, the `AttributeSet` no longer existed on the client's `ASC` and the game crashed.
+局限:
+1. 你必须为每种武器类型创建一个新的 `AttributeSet` 类。`ASCs` 在功能上只能拥有每一个类的一个 `AttributeSet` 实例，因为对 `Attribute` 的更改会在 `ASCs` 的 `SpawnedAttributes` 数组中查找其 `AttributeSet` 类的第一个实例。相同 `AttributeSet` 类的其他实例将被忽略。
+1. 由于前述每个 `AttributeSet` 类仅能有一个实例，因此玩家的库存中只能拥有每种类型的武器各一把。
+1. 移除 `AttributeSet` 存在风险。在 GASShooter 中，如果玩家用火箭自杀，玩家会立即将火箭发射器从库存中移除（包括从 `ASC` 中移除其 `AttributeSet`）。当服务器复制火箭发射器的弹药 `Attribute` 更改时，该 `AttributeSet` 已不存在于客户端的 `ASC` 上，导致游戏崩溃。
 
 <a name="concepts-as-design-itemattributes-asc"></a>
-###### 4.4.2.3.3 `ASC` on the Item
-Putting a whole `AbilitySystemComponent` on each item is an extreme approach. I have not personally done this nor have I seen it in the wild. It would take a lot of engineering to make it work.
+###### 4.4.2.3.3 在物品类中使用 `ASC`
 
-> Is it viable to have several AbilitySystemComponents which have the same owner but different avatars (e.g. on pawn and weapon/items/projectiles with Owner set to PlayerState)?
+把完整 `AbilitySystemComponent` 挂载在每个物品上是一种极端方案。本人未亲自实现过该方案，也未在实际项目中见过。此方案需要大量工程化工作才能正常运行。
+
+> 能否让多个技能系统组件 (AbilitySystemComponents) 共享相同的 Owner 但是不同的 avatars（例如在 Pawn、武器/物品/投射物 上将其 Owner 设置为 PlayerState）？
 >
-> The first problem I see there would be implementing the IGameplayTagAssetInterface and IAbilitySystemInterface on the owning actor. The former may be possible: just aggregate the tags from all all ASCs (but watch out -HasAllMatchingGameplayTags may be met only via cross ASC aggregation. It wouldn't be enough to just forward that calls to each ASC and OR the results together). But the later is even trickier: which ASC is the authoritative one? If someone wants to apply a GE -which one should receive it? Maybe you can work these out but this side of the problem will be the hardest: owners will have multiple ASCs beneath them.
+> 首要问题在于 Owning Actor 需要实现 `IGameplayTagAssetInterface` 和 `IAbilitySystemInterface` 接口。前者或许可行：只需聚合所有 ASC 的标签即可（但要注意——`HasAllMatchingGameplayTags` 可能只能通过跨 ASC 聚合才能满足。仅将这些调用转发到每个 ASC 并合并结果是不够的）。但后者更棘手：哪个 ASC 才是权威？如果有人想应用一个 GE（Gameplay效果），应该由哪个 ASC 接收？也许这些问题都能解决，但 Owners 底下多个 ASC 共存引发的关联问题将是最难的。
 >
-> Separate ASCs on the pawn and the weapon can make sense on its own though. E.g, distinguishing between tags that describe the weapon vs those that describe the owning pawn. Maybe it does make sense that tags granted to the weapon also “apply” to the owner and nothing else (e.g, attributes and GEs are independent but the owner will aggregate the owned tags like I describe above). This could work out, I am sure. But having multiple ASCs with the same owner may get dicey.
+> 不过，在 Pawn 和武器上使用独立的 ASC 本身是有意义的。例如，用于区分描述武器的标签与描述所有者 Pawn 的标签。或许确实可以让授予给武器的标签“应用”到所有者身上，而无需其他额外操作（例如属性和 GEs 可以相互独立，但所有者会像我上面描述的那样聚合这些标签）。我相信这能行得通，但在相同所有者下拥有多个 ASC 可能会变得棘手。
 
-*Dave Ratti from Epic's answer to [community questions #6](https://epicgames.ent.box.com/s/m1egifkxv3he3u3xezb9hzbgroxyhx89)*
+*Dave Ratti 来自 Epic 的回答，取自 [community questions #6](https://epicgames.ent.box.com/s/m1egifkxv3he3u3xezb9hzbgroxyhx89)*
 
-Benefits:
-1. Can use existing `GameplayAbility` and `GameplayEffect` workflow (`Cost GEs` for ammo use, etc)
-1. Can reuse `AttributeSet` classes (one on each weapon's ASC)
+优势：
+1. 可以使用现有的 `GameplayAbility` 和 `GameplayEffect` 工作流（如用于弹药消耗的 `Cost GEs` 等）
+1. 可复用 `AttributeSet` 类（在每把武器的 ASC 上各一个）
 
-Limitations:
-1. Unknown engineering cost
-1. Is it even possible?
+局限：
+1. 工程实现成本未知
+1. 可行性存疑
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-attributes"></a>
 #### 4.4.3 Defining Attributes
