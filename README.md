@@ -864,7 +864,7 @@ if (Attribute == GetMoveSpeedAttribute())
 
 此函数会在对 `Attributes` 进行任何更改时触发，无论是使用由 `AttributeSet.h` 宏块定义的 `Attribute` 设置器 (setter)（见 [定义属性](#concepts-as-attributes)），还是通过 [`GameplayEffects`](#concepts-ge) 触发。
 
-**注意：**这里进行的任何限制 (clamping) 并不会永久更改 `ASC` 上的修饰器 (modifier)。它仅更改查询该修饰器时返回的值。这意味着，任何从所有修饰器重新计算 `CurrentValue` 的操作，比如 [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) 和 [`ModifierMagnitudeCalculations`](#concepts-ge-mmc)，都需要再次实现限制 (clamping)。
+**注意：** 这里进行的任何限制 (clamping) 并不会永久更改 `ASC` 上的修饰器 (modifier)。它仅更改查询该修饰器时返回的值。这意味着，任何从所有修饰器重新计算 `CurrentValue` 的操作，比如 [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) 和 [`ModifierMagnitudeCalculations`](#concepts-ge-mmc)，都需要再次实现限制 (clamping)。
 
 **注意：** Epic 对 `PreAttributeChange()` 的注释指出，不要将其用于处理游戏玩法逻辑，而应主要用于限制 (clamping)。推荐在 `Attribute` 更改时处理游戏玩法逻辑的位置是 `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`（见 [响应属性变化](#concepts-a-changes)）。
 
