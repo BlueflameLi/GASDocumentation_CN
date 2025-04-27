@@ -22,7 +22,7 @@
 
 我对 Unreal Engine 5 的 GameplayAbilitySystem 插件 (GAS)的理解，附带一个简单的多人示例项目。本文档非官方文档，项目与本人均与 Epic Games 无关联。不保证信息的准确性。
 
-本文档目标是解释 GAS 中的主要概念和类，并根据我的使用经验提供额外说明。GAS 社区中存在许多"部落知识 (社区经验)"，我在此将分享所有积累的知识。
+本文档目标是解释 GAS 中的主要概念和类，并根据我的使用经验提供额外说明。GAS 社区中存在许多"部落知识"（社区经验），我在此将分享所有积累的知识。
 
 示例项目和文档基于 **Unreal Engine 5.3** (UE5)。旧版引擎有对应分支，但不再维护且可能存在错误或过时信息，请使用与引擎版本匹配的分支。
 
@@ -32,7 +32,7 @@
 
 <a name="table-of-contents"></a>
 
-## Table of Contents
+## 目录
 
 > 1. [GameplayAbilitySystem 插件简介](#intro)
 > 1. [示例项目](#sp)
@@ -55,7 +55,7 @@
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2 [属性集设计](#concepts-as-design)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.1 [具有独立属性的子组件](#concepts-as-design-subcomponents)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.2 [运行时添加/移除属性集](#concepts-as-design-addremoveruntime)  
->       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3 [物品属性 (武器弹药)](#concepts-as-design-itemattributes)  
+>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3 [物品属性（武器弹药）](#concepts-as-design-itemattributes)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.1 [在物品类中使用普通浮点数](#concepts-as-design-itemattributes-plainfloats)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.2 [在物品类中使用 `AttributeSet`](#concepts-as-design-itemattributes-attributeset)  
 >       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.2.3.3 [在物品类中使用 `ASC`](#concepts-as-design-itemattributes-asc)  
@@ -249,7 +249,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 * Gameplay效果执行计算 (`GameplayEffectExecutionCalculations`)
 * 眩晕效果 (Stun Effect)
 * 死亡与重生机制
-* 通过服务端技能生成 Actor (发射物)
+* 通过服务端技能生成 Actor（发射物）
 * 当瞄准与冲刺时，预测性调整本地玩家速度
 * 持续消耗耐力以维持冲刺状态
 * 消耗法力值施放技能
@@ -259,21 +259,21 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 * 在蓝图中创建 `GameplayAbilities` 
 *  在 C++ 中创建 `GameplayAbilities`
 * 按 `Actor` 独立实例化 `GameplayAbilities`
-* 非实例化 `GameplayAbilities` (跳跃)
-* 静态 `GameplayCues` (如枪械命中粒子特效)
-* 基于 Actor 的 `GameplayCues` (冲刺与眩晕粒子特效)
+* 非实例化 `GameplayAbilities`（跳跃）
+* 静态 `GameplayCues`（如枪械命中粒子特效）
+* 基于 Actor 的 `GameplayCues`（冲刺与眩晕粒子特效）
 
 英雄 (hero) 类包含以下技能：
 
-| 技能             | 输入绑定  | 是否可预测 | C++ / 蓝图 | 技能描述                                                     |
-| ---------------- | --------- | ---------- | ---------- | ------------------------------------------------------------ |
-| 跳跃             | 空格键    | 是         | C++        | 使英雄执行跳跃动作。                                         |
-| 射击             | 鼠标左键  | 否         | C++        | 从英雄的枪械射出发射物。动画效果支持预测，但发射物生成无法预测。 |
-| 瞄准（精准射击） | 鼠标右键  | 是         | 蓝图       | 按住鼠标右键时，英雄移速降低且镜头拉近，以提升枪械射击精度。 |
-| 疾跑             | 左 Shift  | 是         | 蓝图       | 按住按键时，英雄加速移动并持续消耗耐力。                     |
-| 向前冲刺         | Q         | 是         | 蓝图       | 英雄消耗耐力向前冲刺。                                       |
-| 被动护甲叠加     | 无 (被动) | 否         | 蓝图       | 每 4 秒获得 1 层护甲（上限 4 层），受到伤害时移除 1 层护甲。 |
-| 陨石术           | R         | 否         | 蓝图       | 玩家指定目标位置召唤陨石，对敌人造成伤害并附加眩晕。目标选取可预测，陨石生成无法预测。 |
+| 技能             | 输入绑定   | 是否可预测 | C++ / 蓝图 | 技能描述                                                     |
+| ---------------- | ---------- | ---------- | ---------- | ------------------------------------------------------------ |
+| 跳跃             | 空格键     | 是         | C++        | 使英雄执行跳跃动作。                                         |
+| 射击             | 鼠标左键   | 否         | C++        | 从英雄的枪械射出发射物。动画效果支持预测，但发射物生成无法预测。 |
+| 瞄准（精准射击） | 鼠标右键   | 是         | 蓝图       | 按住鼠标右键时，英雄移速降低且镜头拉近，以提升枪械射击精度。 |
+| 疾跑             | 左 Shift   | 是         | 蓝图       | 按住按键时，英雄加速移动并持续消耗耐力。                     |
+| 向前冲刺         | Q          | 是         | 蓝图       | 英雄消耗耐力向前冲刺。                                       |
+| 被动护甲叠加     | 无（被动） | 否         | 蓝图       | 每 4 秒获得 1 层护甲（上限 4 层），受到伤害时移除 1 层护甲。 |
+| 陨石术           | R          | 否         | 蓝图       | 玩家指定目标位置召唤陨石，对敌人造成伤害并附加眩晕。目标选取可预测，陨石生成无法预测。 |
 
 `GameplayAbilities` 通过 C++ 还是蓝图创建都没关系。本示例中混合使用两者，仅为演示不同语言环境下的实现方式。
 
@@ -337,7 +337,7 @@ GameplayAbilitySystem 插件由 Epic Games 开发，随 Unreal Engine 提供。�
 >译者注：关于 `NetUpdateFrequency`
 >
 >- 服务器不会在每次更新时复制 actor。这会消耗太多的带宽和 CPU 资源。实际上，服务器会按照 `AActor::NetUpdateFrequency` 属性指定的频度来复制 actor。（参见 [Actor 的 Role 和 RemoteRole 属性](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/actor-role-and-remote-role-in-unreal-engine?application_version=5.3#复制模式))
->- 减少 `NetUpdateFrequency` 值：actor 的更新次数越少，更新所用的时间就越短。最好是尽量压低这个数值。该数值代表了这个 actor 每秒复制到客户端的频度 (参见 [性能与带宽注意事项](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/performance-and-bandwidth-tips-for-unreal-engine?application_version=5.3))
+>- 减少 `NetUpdateFrequency` 值：actor 的更新次数越少，更新所用的时间就越短。最好是尽量压低这个数值。该数值代表了这个 actor 每秒复制到客户端的频度（参见 [性能与带宽注意事项](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/performance-and-bandwidth-tips-for-unreal-engine?application_version=5.3)）
 >- 如果需要使用 `NetUpdateFrequency`，直接在构造函数中设置即可，如 `NetUpdateFrequency = 100.f`，注意 100 是个很高的值，应根据实际情况调整
 
 若 `OwnerActor` 和 `AvatarActor` 是不同 `Actor`，两者均应实现 `IAbilitySystemInterface` 接口。此接口需重写一个函数：`UAbilitySystemComponent* GetAbilitySystemComponent() const`，返回其 `ASC` 的指针。系统内部通过此接口函数实现 `ASC` 之间的交互。
@@ -382,7 +382,7 @@ AGDPlayerState::AGDPlayerState()
 }
 ```
 
-ASC 需在服务器和客户端上通过 **`OwnerActor`** 和 **`AvatarActor`** 进行初始化。初始化应在**设置 `Pawn` 的 `Controller` (被控制 (Possession)）后** 执行。单机游戏只需处理服务器路径。
+ASC 需在服务器和客户端上通过 **`OwnerActor`** 和 **`AvatarActor`** 进行初始化。初始化应在**设置 `Pawn` 的 `Controller`（被控制 (Possession)）后** 执行。单机游戏只需处理服务器路径。
 
 #### 场景 1：ASC 挂载在 Pawn 上（玩家控制角色）
 
@@ -582,7 +582,7 @@ void FCommonConversationRuntimeModule::StartupModule()
 
 关于 `Attributes` 限制 (Clamp) 的讨论参见：
 
-- **[PreAttributeChange()](#concepts-as-preattributechange)**：处理 **当前值（CurrentValue）** 变更
+- **[PreAttributeChange()](#concepts-as-preattributechange)**：处理 **当前值 (CurrentValue)** 变更
 - **[PostGameplayEffectExecute()](#concepts-as-postgameplayeffectexecute)** ：处理来自 **Gameplay效果 (GameplayEffects)** 的 **基础值 (BaseValue)** 变更
 
 对 `BaseValue` 的永久性修改来自**即时型 (Instant)** 的 `GameplayEffects`，而 **持续型 (Duration)** 和 **无限型 (Infinite)** 的 `GameplayEffects` 则修改 `CurrentValue`。**周期性 (Periodic)** 的 `GameplayEffects` 按 **即时型 (Instant)** 的 `GameplayEffects` 处理，会改变 `BaseValue`。
@@ -688,7 +688,7 @@ AbilitySystemComponent->GetSpawnedAttributes_Mutable().Remove(WeaponAttributeSet
 AbilitySystemComponent->ForceReplication();
 ```
 <a name="concepts-as-design-itemattributes"></a>
-##### 4.4.2.3 物品属性 (武器弹药)
+##### 4.4.2.3 物品属性（武器弹药）
 
 有几种方法可以实现带有 `Attributes` 的可装备的物品（武器弹药、护甲耐久度等）。所有这些方法都将数值直接存储在物品本身上。对于在其生命周期内可能被多个玩家装备的物品，这是必要的。
 
@@ -715,7 +715,7 @@ void AGSWeapon::PreReplication(IRepChangedPropertyTracker& ChangedPropertyTracke
 ```
 
 优势：
-1. 避免了使用 `AttributeSets` 的局限 (见下文)
+1. 避免了使用 `AttributeSets` 的局限（见下文）
 
 局限:
 1. 无法使用现用的 `GameplayEffect` 工作流（如用于弹药消耗的 `Cost GEs` 等）
@@ -774,11 +774,12 @@ void AGSWeapon::BeginPlay()
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-attributes"></a>
-#### 4.4.3 Defining Attributes
-**`Attributes` can only be defined in C++** in the `AttributeSet's` header file. It is recommended to add this block of macros to the top of every `AttributeSet` header file. It will automatically generate getter and setter functions for your `Attributes`.
+#### 4.4.3 定义属性
+
+**`Attributes` 只能通过 C++ 定义**，且必须定义在 `AttributeSet` 的头文件中。推荐在每个 `AttributeSet` 头文件的顶部添加如下宏块。它将自动为你的 `Attributes` 生成 getter 和 setter 函数。
 
 ```c++
-// Uses macros from AttributeSet.h
+// 使用 AttributeSet.h 中的宏
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
@@ -786,7 +787,7 @@ void AGSWeapon::BeginPlay()
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 ```
 
-A replicated health attribute would be defined like this:
+一个可复制 (Replicated) 的生命值 (health) 属性可以这样定义：
 
 ```c++
 UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_Health)
@@ -794,13 +795,14 @@ FGameplayAttributeData Health;
 ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Health)
 ```
 
-Also define the `OnRep` function in the header:
+同时，在头文件中定义 `OnRep` 函数：
 ```c++
 UFUNCTION()
 virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 ```
 
-The .cpp file for the `AttributeSet` should fill in the `OnRep` function with the `GAMEPLAYATTRIBUTE_REPNOTIFY` macro used by the prediction system:
+在 `AttributeSet` 的 .cpp 文件中，使用预测系统所需的 `GAMEPLAYATTRIBUTE_REPNOTIFY` 宏填写 `OnRep` 函数内容：
+
 ```c++
 void UGDAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth)
 {
@@ -808,7 +810,7 @@ void UGDAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth)
 }
 ```
 
-Finally, the `Attribute` needs to be added to `GetLifetimeReplicatedProps`:
+最后，需要在 `GetLifetimeReplicatedProps` 中添加该 `Attribute`：
 ```c++
 void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -818,70 +820,76 @@ void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 }
 ```
 
-`REPNOTIFY_Always` tells the `OnRep` function to trigger if the local value is already equal to the value being repped down from the Server (due to prediction). By default it won't trigger the `OnRep` function if the local value is the same as the value being repped down from the Server.
+`REPNOTIFY_Always` 表示即使本地值已经与从服务器复制下来的值相同（由于预测导致），也要触发 `OnRep` 函数。默认情况下，如果本地值与服务器同步下来的值相同，是不会触发 `OnRep` 函数的。
 
-If the `Attribute` is not replicated like a `Meta Attribute`, then the `OnRep` and `GetLifetimeReplicatedProps` steps can be skipped.
+如果某个 `Attribute` 不需要复制（例如 `Meta Attribute`），则可以跳过 `OnRep` 和 `GetLifetimeReplicatedProps` 这两个步骤。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-init"></a>
-#### 4.4.4 Initializing Attributes
-There are multiple ways to initialize `Attributes` (set their `BaseValue` and consequently their `CurrentValue` to some initial value). Epic recommends using an instant `GameplayEffect`. This is the method used in the Sample Project too.
 
-See `GE_HeroAttributes` Blueprint in the Sample Project for how to make an instant `GameplayEffect` to initialize `Attributes`. Application of this `GameplayEffect` happens in C++.
+#### 4.4.4 初始化属性
 
-If you used the `ATTRIBUTE_ACCESSORS` macro when you defined your `Attributes`, an initialization function will automatically be generated on the `AttributeSet` for each `Attribute` that you can call at your leisure in C++.
+有多种方法可以初始化 `Attributes`（将其 `BaseValue` 以及相应的 `CurrentValue` 设置为某个初始值）。Epic 推荐使用即时型 (Instant) 的 `GameplayEffect`。示例项目也使用了这种方法。
+
+请参考示例项目中的 `GE_HeroAttributes` 蓝图，了解如何制作一个用于初始化 `Attributes` 的即时 `GameplayEffect`。该 `GameplayEffect` 的应用在 C++ 中完成。
+
+如果在定义 `Attributes` 时使用了 `ATTRIBUTE_ACCESSORS` 宏，则在 `AttributeSet` 上会为每个 `Attribute` 自动生成一个初始化函数，你可以在 C++ 中随时调用它。
 
 ```c++
-// InitHealth(float InitialValue) is an automatically generated function for an Attribute 'Health' defined with the `ATTRIBUTE_ACCESSORS` macro
+// InitHealth(float InitialValue) 是一个为使用 `ATTRIBUTE_ACCESSORS` 宏定义的属性 'Health' 自动生成的函数
 AttributeSet->InitHealth(100.0f);
 ```
 
-See `AttributeSet.h` for more ways to initialize `Attributes`.
+更多初始化 `Attributes` 的方法可参考 `AttributeSet.h`。
 
-**Note:** Prior to 4.24, `FAttributeSetInitterDiscreteLevels` did not work with `FGameplayAttributeData`. It was created when `Attributes` were raw floats and will complain about `FGameplayAttributeData` not being `Plain Old Data` (`POD`). This is fixed in 4.24 https://issues.unrealengine.com/issue/UE-76557.
+**注意：** 在 4.24 版本之前，`FAttributeSetInitterDiscreteLevels` 无法与 `FGameplayAttributeData` 一起使用。它是在 `Attributes` 还是原始浮点数时创建的，并且在处理 `FGameplayAttributeData` 时会报错，提示其不是 `Plain Old Data`（POD，简单旧数据类型）。此问题已在 4.24 中修复：https://issues.unrealengine.com/issue/UE-76557。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-preattributechange"></a>
 #### 4.4.5 PreAttributeChange()
-`PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)` is one of the main functions in the `AttributeSet` to respond to changes to an `Attribute's` `CurrentValue` before the change happens. It is the ideal place to clamp incoming changes to `CurrentValue` via the reference parameter `NewValue`.
 
-For example to clamp movespeed modifiers the Sample Project does it like so:
+`PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)` 是 `AttributeSet` 中用于在 `Attribute` 的 `CurrentValue` 发生更改前响应更改的主要函数之一。它是通过引用参数 `NewValue` 对传入的 `CurrentValue` 更改进行限制 (clamp) 的理想位置。
+
+例如，示例工程限制移动速度修饰符的方式如下：
 ```c++
 if (Attribute == GetMoveSpeedAttribute())
 {
-	// Cannot slow less than 150 units/s and cannot boost more than 1000 units/s
+	// 不能低于每秒 150 单位，且不能超过每秒 1000 单位
 	NewValue = FMath::Clamp<float>(NewValue, 150, 1000);
 }
 ```
-The `GetMoveSpeedAttribute()` function is created by the macro block that we added to the `AttributeSet.h` ([Defining Attributes](#concepts-as-attributes)).
+`GetMoveSpeedAttribute()` 函数由我们在 `AttributeSet.h` 中添加的宏块生成（见 [定义属性](#concepts-as-attributes)）。
 
-This is triggered from any changes to `Attributes`, whether using `Attribute` setters (defined by the macro block in `AttributeSet.h` ([Defining Attributes](#concepts-as-attributes))) or using [`GameplayEffects`](#concepts-ge).
+此函数会在对 `Attributes` 进行任何更改时触发，无论是使用由 `AttributeSet.h` 宏块定义的 `Attribute` 设置器 (setter)（见 [定义属性](#concepts-as-attributes)），还是通过 [`GameplayEffects`](#concepts-ge) 触发。
 
-**Note:** Any clamping that happens here does not permanently change the modifier on the `ASC`. It only changes the value returned from querying the modifier. This means anything that recalculates the `CurrentValue` from all of the modifiers like [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) and [`ModifierMagnitudeCalculations`](#concepts-ge-mmc) need to implement clamping again.
+**注意：**这里进行的任何限制 (clamping) 并不会永久更改 `ASC` 上的修饰器 (modifier)。它仅更改查询该修饰器时返回的值。这意味着，任何从所有修饰器重新计算 `CurrentValue` 的操作，比如 [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) 和 [`ModifierMagnitudeCalculations`](#concepts-ge-mmc)，都需要再次实现限制 (clamping)。
 
-**Note:** Epic's comments for `PreAttributeChange()` say not to use it for gameplay events and instead use it mainly for clamping. The recommended place for gameplay events on `Attribute` change is `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)` ([Responding to Attribute Changes](#concepts-a-changes)).
+**注意：** Epic 对 `PreAttributeChange()` 的注释指出，不要将其用于处理游戏玩法逻辑，而应主要用于限制 (clamping)。推荐在 `Attribute` 更改时处理游戏玩法逻辑的位置是 `UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)`（见 [响应属性变化](#concepts-a-changes)）。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-postgameplayeffectexecute"></a>
 #### 4.4.6 PostGameplayEffectExecute()
-`PostGameplayEffectExecute(const FGameplayEffectModCallbackData & Data)` only triggers after changes to the `BaseValue` of an `Attribute` from an instant [`GameplayEffect`](#concepts-ge). This is a valid place to do more `Attribute` manipulation when they change from a `GameplayEffect`.
 
-For example, in the Sample Project we subtract the final damage `Meta Attribute` from the health `Attribute` here. If there was a shield `Attribute`, we would subtract the damage from it first before subtracting the remainder from health. The Sample Project also uses this location to apply hit react animations, show floating Damage Numbers, and assign experience and gold bounties to the killer. By design, the damage `Meta Attribute` will always come through an instant `GameplayEffect` and never the `Attribute` setter.
+`PostGameplayEffectExecute(const FGameplayEffectModCallbackData & Data)` 仅在即时型 (Instant) [`GameplayEffect`](#concepts-ge) 导致的 `Attribute` 的 `BaseValue` 更改之后触发。这是对由 `GameplayEffect` 引起的更改进行更多 `Attribute` 操作的合适位置。
 
-Other `Attributes` that will only have their `BaseValue` changed from instant `GameplayEffects` like mana and stamina can also be clamped to their maximum value counterpart `Attributes` here.
+例如，在示例项目中，我们在此处将最终伤害值 `Meta Attribute` 从生命值 `Attribute` 中扣除。如果存在护盾值 `Attribute`，则会先从护盾值中扣除伤害值，再将剩余部分从生命值中扣除。示例项目还利用此位置来播放受击反应动画、显示浮动伤害数字，以及将经验值和金币奖励分配给击杀者。按设计，伤害值 `Meta Attribute` 始终通过即时型 (Instant) `GameplayEffect` 传递，而不会通过 `Attribute` 设置器 (setter)。
 
-**Note:** When `PostGameplayEffectExecute()` is called, changes to the `Attribute` have already happened, but they have not replicated back to clients yet so clamping values here will not cause two network updates to clients. Clients will only receive the update after clamping.
+其他仅会因即时型 (Instant) `GameplayEffects` 更改其 `BaseValue` 的 `Attribute`（如法力值和耐力值）也可以在此处将其限制 (clamp) 到其最大值对应的 `Attribute` 上。
 
-**[⬆ Back to Top](#table-of-contents)**
+**注意：** 调用 `PostGameplayEffectExecute()` 时，`Attribute` 的更改已生效，但尚未复制到客户端，因此在此处进行限制不会导致向客户端发送两次网络更新。客户端仅会在限制后接收更新。
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-as-onattributeaggregatorcreated"></a>
-#### 4.4.7 OnAttributeAggregatorCreated()
-`OnAttributeAggregatorCreated(const FGameplayAttribute& Attribute, FAggregator* NewAggregator)` triggers when an `Aggregator` is created for an `Attribute` in this set. It allows custom setup of [`FAggregatorEvaluateMetaData`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FAggregatorEvaluateMetaData/index.html). `AggregatorEvaluateMetaData` is used by the `Aggregator` in evaluating the `CurrentValue` of an `Attribute` based on all the [`Modifiers`](#concepts-ge-mods) applied to it. By default, `AggregatorEvaluateMetaData` is only used by the `Aggregator` to determine which `Modifiers` qualify with the example of `MostNegativeMod_AllPositiveMods` which allows all positive `Modifiers` but restricts negative `Modifiers` to only the most negative one. This was used by Paragon to only allow the most negative move speed slow effect to apply to a player regardless of how many slow effects where on them at any one time while applying all positive move speed buffs. `Modifiers` that don't qualify still exist on the `ASC`, they just aren't aggregated into the final `CurrentValue`. They can potentially qualify later once conditions change, like in the case if the most negative `Modifier` expires, the next most negative `Modifier` (if one exists) then qualifies.
 
-To use AggregatorEvaluateMetaData in the example of only allowing the most negative `Modifier` and all positive `Modifiers`:
+#### 4.4.7 OnAttributeAggregatorCreated()
+
+`OnAttributeAggregatorCreated(const FGameplayAttribute& Attribute, FAggregator* NewAggregator)` 在此属性集中为某个 ` Attribute` 创建 **聚合器 (` Aggregator`)** 时触发。它允许自定义设置 [`FAggregatorEvaluateMetaData`](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/FAggregatorEvaluateMetaData?application_version=5.3)。在评估某个 `Attribute` 的 `CurrentValue` 时，`Aggregator` 会根据所有作用在该属性上的 [`Modifiers`](#concepts-ge-mods) 来使用 `AggregatorEvaluateMetaData`。默认情况下，`AggregatorEvaluateMetaData` 仅由 `Aggregator` 用于确定哪些 `Modifiers` 符合条件，例如 `MostNegativeMod_AllPositiveMods`，它允许所有正向 `Modifiers`，但限制负向 `Modifiers` 仅保留最负向的一个。《虚幻争霸》曾使用此方式，仅允许对玩家应用最高的移动减速效果（无论同时存在多少减速效果），同时应用所有正向的移动速度增益效果。不符合条件的 `Modifiers` 仍然保留在 `ASC` 中，只是不被聚合到最终的 `CurrentValue`。一旦条件改变，例如最负向的 `Modifier` 过期，下一个最负向的 `Modifier`（如果存在）便会重新符合条件。
+
+以下示例演示如何通过 `AggregatorEvaluateMetaData` 实现仅允许最负向 `Modifier ` 和所有正向 `Modifier`：
 
 ```c++
 virtual void OnAttributeAggregatorCreated(const FGameplayAttribute& Attribute, FAggregator* NewAggregator) const override;
@@ -904,9 +912,9 @@ void UGSAttributeSetBase::OnAttributeAggregatorCreated(const FGameplayAttribute&
 }
 ```
 
-Your custom `AggregatorEvaluateMetaData` for qualifiers should be added to `FAggregatorEvaluateMetaDataLibrary` as static variables.
+用于限定条件的自定义 `AggregatorEvaluateMetaData` 应作为静态变量添加到 `FAggregatorEvaluateMetaDataLibrary` 中。
 
-**[⬆ Back to Top](#table-of-contents)**
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-ge"></a>
 ### 4.5 Gameplay Effects
