@@ -954,42 +954,47 @@ UpdateAllAggregatorModMagnitudes(Effect);
 **[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-ge-applying"></a>
-#### 4.5.2 Applying Gameplay Effects
-`GameplayEffects` can be applied in many ways from functions on [`GameplayAbilities`](#concepts-ga) and functions on the `ASC` and usually take the form of `ApplyGameplayEffectTo`. The different functions are essentially convenience functions that will eventually call `UAbilitySystemComponent::ApplyGameplayEffectSpecToSelf()` on the `Target`.
+#### 4.5.2 应用 Gameplay效果
+`GameplayEffects` 可以通过 [`GameplayAbilities`](#concepts-ga) 或 `ASC` 提供的多种函数进行应用，通常是 `ApplyGameplayEffectTo*` 系列接口。它们实质上都是便捷封装，最终都会在 `Target` 上调用 `UAbilitySystemComponent::ApplyGameplayEffectSpecToSelf()`。
 
-To apply `GameplayEffects` outside of a `GameplayAbility` for example from a projectile, you need to get the `Target's` `ASC` and use one of its functions to `ApplyGameplayEffectToSelf`.
+如果需要在 `GameplayAbility` 外部应用 `GameplayEffects`，例如由发射物触发，你需要先获取 `Target` 的 `ASC`，再调用它的其中一个函数来 `ApplyGameplayEffectToSelf` 。
 
-You can listen for when any `Duration` or `Infinite` `GameplayEffects` are applied to an `ASC` by binding to its delegate:
+要监听任意 `Duration` 或 `Infinite` 类型的 `GameplayEffects` 何时被应用到某个 `ASC`，可绑定如下委托：
 ```c++
 AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &APACharacterBase::OnActiveGameplayEffectAddedCallback);
 ```
-The callback function:
+回调函数：
 ```c++
 virtual void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 ```
 
-The server will always call this function regardless of replication mode. The autonomous proxy will only call this for replicated `GameplayEffects` in `Full` and `Mixed` replication modes. Simulated proxies will only call this in `Full` [replication mode](#concepts-asc-rm).
+无论是何种复制模式，服务器端都会调用该回调。自治代理 (Autonomous proxy) 仅会在 `Full` 和 `Mixed` 复制模式下为复制的 `GameplayEffects` 调用此函数。模拟代理 (Simulated Proxy) 仅会在 `Full` [复制模式](#concepts-asc-rm) 下调用此函数。
 
-**[⬆ Back to Top](#table-of-contents)**
+> 译者注：关于 Autonomous proxy 和 Simulated Proxy，可以参考 [虚幻引擎Actor的 Role 和 RemoteRole属性](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/actor-role-and-remote-role-in-unreal-engine?application_version=5.3)
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-ga-removing"></a>
-#### 4.5.3 Removing Gameplay Effects
-`GameplayEffects` can be removed in many ways from functions on [`GameplayAbilities`](#concepts-ga) and functions on the `ASC` and usually take the form of `RemoveActiveGameplayEffect`. The different functions are essentially convenience functions that will eventually call `FActiveGameplayEffectsContainer::RemoveActiveEffects()` on the `Target`.
 
-To remove `GameplayEffects` outside of a `GameplayAbility`, you need to get the `Target's` `ASC` and use one of its functions to `RemoveActiveGameplayEffect`.
+#### 4.5.3 移除 Gameplay效果
+`GameplayEffects` 的移除可以通过 [`GameplayAbilities`](#concepts-ga) 或 `ASC` 提供的多种函数完成，通常是 `RemoveActiveGameplayEffect*` 系列接口。它们同样只是便捷封装，最终都会在 `Target` 上调用 `FActiveGameplayEffectsContainer::RemoveActiveEffects()`。
 
-You can listen for when any `Duration` or `Infinite` `GameplayEffects` are removed from an `ASC` by binding to its delegate:
+如果需要在 `GameplayAbility` 外部移除 `GameplayEffects`，也是需要先获取 `Target` 的 `ASC`，再调用它的其中一个函数来 `RemoveActiveGameplayEffect` 。
+
+要监听任意 `Duration` 或 `Infinite` 类型的 `GameplayEffects` 何时从某个 `ASC` 被移除，可绑定如下委托：
 ```c++
 AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &APACharacterBase::OnRemoveGameplayEffectCallback);
 ```
-The callback function:
+回调函数：
 ```c++
 virtual void OnRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
 ```
 
-The server will always call this function regardless of replication mode. The autonomous proxy will only call this for replicated `GameplayEffects` in `Full` and `Mixed` replication modes. Simulated proxies will only call this in `Full` [replication mode](#concepts-asc-rm).
+无论是何种复制模式，服务器端都会调用该回调。自治代理(Autonomous Proxy) 仅会在 `Full` 和 `Mixed` 复制模式下为复制的 `GameplayEffects` 调用此函数；模拟代理(Simulated Proxy) 仅会在 `Full` [复制模式](#concepts-asc-rm) 下调用此函数。
 
-**[⬆ Back to Top](#table-of-contents)**
+> 译者注：关于 Autonomous proxy 和 Simulated Proxy，可以参考 [虚幻引擎Actor的 Role 和 RemoteRole属性](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/actor-role-and-remote-role-in-unreal-engine?application_version=5.3)
+
+**[⬆ 回到顶部](#table-of-contents)**
 
 <a name="concepts-ge-mods"></a>
 #### 4.5.4 Gameplay Effect Modifiers
