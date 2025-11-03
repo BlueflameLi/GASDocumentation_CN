@@ -968,7 +968,7 @@ AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(thi
 virtual void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 ```
 
-无论是何种复制模式，服务器端都会调用该回调。自治代理 (Autonomous proxy) 仅会在 `Full` 和 `Mixed` 复制模式下为复制的 `GameplayEffects` 调用此函数。模拟代理 (Simulated Proxy) 仅会在 `Full` [复制模式](#concepts-asc-rm) 下调用此函数。
+无论是何种复制模式，服务端都会调用该回调。自治代理 (Autonomous proxy) 仅会在 `Full` 和 `Mixed` 复制模式下为复制的 `GameplayEffects` 调用此函数。模拟代理 (Simulated Proxy) 仅会在 `Full` [复制模式](#concepts-asc-rm) 下调用此函数。
 
 > 译者注：关于 Autonomous proxy 和 Simulated Proxy，可以参考 [虚幻引擎Actor的 Role 和 RemoteRole属性](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/actor-role-and-remote-role-in-unreal-engine?application_version=5.3)
 
@@ -990,7 +990,7 @@ AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &A
 virtual void OnRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
 ```
 
-无论是何种复制模式，服务器端都会调用该回调。自治代理(Autonomous Proxy) 仅会在 `Full` 和 `Mixed` 复制模式下为复制的 `GameplayEffects` 调用此函数；模拟代理(Simulated Proxy) 仅会在 `Full` [复制模式](#concepts-asc-rm) 下调用此函数。
+无论是何种复制模式，服务端都会调用该回调。自治代理 (Autonomous Proxy) 仅会在 `Full` 和 `Mixed` 复制模式下为复制的 `GameplayEffects` 调用此函数。模拟代理 (Simulated Proxy) 仅会在 `Full` [复制模式](#concepts-asc-rm) 下调用此函数。
 
 > 译者注：关于 Autonomous proxy 和 Simulated Proxy，可以参考 [虚幻引擎Actor的 Role 和 RemoteRole属性](https://dev.epicgames.com/documentation/zh-cn/unreal-engine/actor-role-and-remote-role-in-unreal-engine?application_version=5.3)
 
